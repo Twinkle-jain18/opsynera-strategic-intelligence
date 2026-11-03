@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { CompassEmblem } from '../components/OpsyneraLogo';
 
 export default function SplashScreen({ onComplete }) {
   const [visible, setVisible] = useState(true);
@@ -7,8 +8,8 @@ export default function SplashScreen({ onComplete }) {
   useEffect(() => {
     const t = setTimeout(() => {
       setVisible(false);
-      setTimeout(onComplete, 480);
-    }, 2600);
+      setTimeout(onComplete, 400);
+    }, 1800);
     return () => clearTimeout(t);
   }, [onComplete]);
 
@@ -19,97 +20,43 @@ export default function SplashScreen({ onComplete }) {
           key="splash"
           initial={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 0.48 }}
-          style={{
-            position: 'fixed',
-            inset: 0,
-            zIndex: 9999,
-            /* Solid background — NO grid pattern, so PNG background matches */
-            background: '#0B1626',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
+          transition={{ duration: 0.4 }}
+          className="fixed inset-0 z-[9999] bg-[#071A3D] flex flex-col items-center justify-center select-none"
         >
-          <div style={{ position: 'relative', zIndex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-
-            {/* Logo fills its own square — no floating against a pattern */}
+          <div className="relative z-10 flex flex-col items-center">
+            
+            {/* Compass Emblem with subtle pulse */}
             <motion.div
-              initial={{ opacity: 0, scale: 0.88 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
-              style={{
-                width: '200px',
-                height: '200px',
-                overflow: 'hidden',
-                marginBottom: '28px',
-              }}
+              initial={{ opacity: 0, scale: 0.8, rotate: -20 }}
+              animate={{ opacity: 1, scale: 1, rotate: 0 }}
+              transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+              className="mb-6 drop-shadow-[0_8px_24px_rgba(244,179,35,0.35)]"
             >
-              <img
-                src="/logo.png"
-                alt="Opsynera"
-                style={{
-                  width: '100%',
-                  height: '100%',
-                  objectFit: 'cover',
-                  objectPosition: 'center',
-                  display: 'block',
-                }}
-                onError={(e) => { e.target.style.display = 'none'; }}
-              />
+              <CompassEmblem size={72} />
             </motion.div>
 
             {/* Wordmark */}
             <motion.div
-              initial={{ opacity: 0, y: 14 }}
+              initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.32, duration: 0.5 }}
-              style={{ textAlign: 'center' }}
+              transition={{ delay: 0.25, duration: 0.5 }}
+              className="text-center"
             >
-              <h1 style={{
-                fontFamily: 'Manrope, sans-serif',
-                fontSize: '26px',
-                fontWeight: 700,
-                color: '#ffffff',
-                letterSpacing: '0.22em',
-                marginBottom: '8px',
-              }}>
+              <h1 className="font-heading font-black text-2xl sm:text-3xl text-white tracking-[0.22em] mb-2">
                 OPSYNERA
               </h1>
-              <p style={{
-                fontFamily: 'Inter, sans-serif',
-                fontSize: '9px',
-                fontWeight: 600,
-                letterSpacing: '0.28em',
-                textTransform: 'uppercase',
-                color: '#B59A67',
-              }}>
+              <p className="text-[10px] sm:text-[11px] font-bold tracking-[0.25em] uppercase text-[#F4B323]">
                 Strategic Intelligence Advisory
               </p>
             </motion.div>
 
-            {/* Progress bar */}
+            {/* Subtle Progress Line */}
             <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.65 }}
-              style={{
-                marginTop: '36px',
-                width: '100px',
-                height: '1px',
-                background: 'rgba(255,255,255,0.1)',
-                position: 'relative',
-                overflow: 'hidden',
-              }}
-            >
-              <motion.div
-                initial={{ width: '0%' }}
-                animate={{ width: '100%' }}
-                transition={{ delay: 0.72, duration: 1.5, ease: 'easeInOut' }}
-                style={{ position: 'absolute', top: 0, left: 0, bottom: 0, background: '#B59A67' }}
-              />
-            </motion.div>
+              initial={{ opacity: 0, width: 0 }}
+              animate={{ opacity: 1, width: 120 }}
+              transition={{ delay: 0.45, duration: 0.8 }}
+              className="mt-8 h-[2px] bg-gradient-to-r from-transparent via-[#F4B323] to-transparent"
+            />
           </div>
         </motion.div>
       )}
