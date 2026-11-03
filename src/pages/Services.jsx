@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ShieldCheck, Search, Globe, Zap, MapPin, BarChart2, CheckCircle, AlertCircle, ArrowRight } from 'lucide-react';
+import { ShieldCheck, Search, Globe, Zap, MapPin, BarChart2, CheckCircle2, AlertCircle, ArrowRight, ShieldAlert } from 'lucide-react';
 import PageHero from '../components/PageHero';
 import EngagementTimeline from '../components/EngagementTimeline';
 import CTASection from '../components/CTASection';
@@ -10,26 +10,24 @@ const serviceIcons = {
   'strategic-risk-advisory': ShieldCheck,
   'due-diligence': Search,
   'osint-research': Globe,
-  'cyber-digital-risk': Zap,
+  'cyber-digital-risk': ShieldAlert,
   'field-verification': MapPin,
   'corporate-intelligence': BarChart2,
 };
 
-const H2 = { fontFamily: 'Manrope, sans-serif', fontSize: 'clamp(19px, 3vw, 28px)', fontWeight: 600, color: '#0B1626', lineHeight: 1.2 };
-
 export default function Services() {
   return (
-    <main>
+    <main className="bg-white">
       <PageHero
         eyebrow="What We Offer"
-        heading="Our Services"
+        heading="Our Advisory Services"
         subtitle="Structured Intelligence. Practical Insights. Informed Decisions."
-        description="Each engagement is tailored to the client's needs, with scope, methodology, and deliverables agreed before work begins."
+        description="Each advisory engagement is tailored to the client's strategic requirements, with clear research boundaries, authorized access protocols, and defensible reporting."
       />
 
-      {/* ── Service Sections ── */}
-      <section style={{ background: '#ffffff' }}>
-        <div className="site-container">
+      {/* ── Services Directory ────────────────────────── */}
+      <section className="site-container py-16 lg:py-20">
+        <div className="space-y-16 lg:space-y-24">
           {services.map((service, i) => {
             const Icon = serviceIcons[service.id] || ShieldCheck;
             const isEven = i % 2 === 0;
@@ -38,106 +36,150 @@ export default function Services() {
               <motion.article
                 key={service.id}
                 id={service.slug}
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 24 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5 }}
                 viewport={{ once: true }}
-                style={{
-                  display: 'grid',
-                  gap: '40px',
-                  alignItems: 'start',
-                  padding: '64px 0',
-                  borderBottom: i < services.length - 1 ? '1px solid #E2E8F0' : 'none',
-                }}
-                className="grid-2"
+                className="scroll-mt-28"
               >
-                {/* Content col */}
-                <div style={{ order: isEven ? 0 : 1 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '18px' }}>
-                    <div style={{ width: '36px', height: '36px', background: '#0B1626', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                      <Icon size={16} color="#B59A67" />
-                    </div>
-                    <span style={{ fontSize: '10px', fontWeight: 800, color: '#B59A67', letterSpacing: '0.18em', textTransform: 'uppercase' }}>
-                      Service {service.number}
-                    </span>
-                  </div>
-
-                  <h2 style={{ ...H2, marginBottom: '14px' }}>{service.title}</h2>
-                  <p style={{ fontSize: '15px', color: '#475569', lineHeight: 1.8, marginBottom: '22px' }}>{service.shortDesc}</p>
-
-                  <ul style={{ listStyle: 'none', padding: 0, margin: '0 0 22px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                    {service.offerings.map(item => (
-                      <li key={item} style={{ display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
-                        <CheckCircle size={14} color="#B59A67" style={{ flexShrink: 0, marginTop: '3px' }} />
-                        <span style={{ fontSize: '14px', color: '#475569', lineHeight: 1.65 }}>{item}</span>
-                      </li>
-                    ))}
-                  </ul>
-
-                  {service.note && (
-                    <div style={{ display: 'flex', gap: '10px', background: '#fffbeb', borderLeft: '2px solid #f59e0b', padding: '12px 14px', marginBottom: '22px' }}>
-                      <AlertCircle size={14} color="#d97706" style={{ flexShrink: 0, marginTop: '2px' }} />
-                      <p style={{ fontSize: '13px', color: '#92400e', lineHeight: 1.65 }}>{service.note}</p>
-                    </div>
-                  )}
-
-                  <Link to={`/contact?service=${encodeURIComponent(service.title)}`} className="btn-outline">
-                    Enquire About This Service <ArrowRight size={13} />
-                  </Link>
-                </div>
-
-                {/* Visual col */}
-                <div style={{ order: isEven ? 1 : 0 }}>
-                  <div style={{
-                    background: '#F8F9FB',
-                    border: '1px solid #E2E8F0',
-                    padding: '40px 32px',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    justifyContent: 'center',
-                    minHeight: '240px',
-                    position: 'relative',
-                    overflow: 'hidden',
-                  }}>
-                    <div style={{
-                      position: 'absolute', bottom: '-16px', right: '-6px',
-                      fontSize: '120px', fontFamily: 'Manrope, sans-serif', fontWeight: 900,
-                      color: '#E8ECF0', lineHeight: 1, userSelect: 'none', pointerEvents: 'none',
-                    }}>
-                      {service.number}
-                    </div>
-                    <div style={{ position: 'relative', zIndex: 1 }}>
-                      <div style={{ width: '42px', height: '42px', background: '#0B1626', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '16px' }}>
-                        <Icon size={19} color="#B59A67" />
+                <div className={`grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 items-center ${
+                  isEven ? '' : 'lg:flex-row-reverse'
+                }`}>
+                  
+                  {/* Text Details Column (7 cols) */}
+                  <div className={`lg:col-span-7 ${isEven ? 'order-1' : 'order-1 lg:order-2'}`}>
+                    
+                    {/* Header badge */}
+                    <div className="flex items-center gap-2 mb-3">
+                      <div className="w-8 h-8 rounded-lg bg-[#071A3D] flex items-center justify-center flex-shrink-0">
+                        <Icon size={16} className="text-[#F4B323]" />
                       </div>
-                      <h3 style={{ fontFamily: 'Manrope, sans-serif', fontSize: '17px', fontWeight: 600, color: '#0B1626', lineHeight: 1.3, marginBottom: '8px' }}>
-                        {service.title}
-                      </h3>
-                      <p style={{ fontSize: '11px', color: '#B59A67', fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase' }}>
-                        {service.offerings.length} Core Offerings
-                      </p>
+                      <span className="text-xs font-black tracking-widest text-[#F4B323] uppercase">
+                        Service {service.number}
+                      </span>
+                    </div>
+
+                    <h2 className="text-2xl sm:text-3xl font-extrabold text-[#071A3D] mb-4 tracking-tight">
+                      {service.title}
+                    </h2>
+
+                    <p className="text-[15px] text-slate-600 leading-relaxed mb-6">
+                      {service.shortDesc}
+                    </p>
+
+                    {/* Offerings list */}
+                    <div className="bg-[#F5F7FA] border border-slate-200/80 rounded-2xl p-6 mb-6">
+                      <div className="text-xs font-bold uppercase tracking-wider text-[#071A3D] mb-3">
+                        Key Advisory Capabilities:
+                      </div>
+                      <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        {service.offerings.map((item) => (
+                          <li key={item} className="flex items-start gap-2.5">
+                            <CheckCircle2 size={15} className="text-[#F4B323] flex-shrink-0 mt-0.5" />
+                            <span className="text-xs sm:text-[13px] text-slate-700 leading-snug">
+                              {item}
+                            </span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+
+                    {/* Legal note if applicable */}
+                    {service.note && (
+                      <div className="flex items-start gap-3 bg-amber-50/80 border-l-4 border-amber-500 rounded-r-xl p-3.5 mb-6">
+                        <AlertCircle size={16} className="text-amber-600 flex-shrink-0 mt-0.5" />
+                        <p className="text-xs text-amber-900 leading-relaxed">
+                          {service.note}
+                        </p>
+                      </div>
+                    )}
+
+                    <div className="flex items-center gap-4">
+                      <Link
+                        to={`/contact?service=${encodeURIComponent(service.title)}`}
+                        className="btn-gold text-xs px-5 py-2.5"
+                      >
+                        Enquire About This Service <ArrowRight size={13} />
+                      </Link>
+                      <Link
+                        to="/contact"
+                        className="btn-pill-outline text-xs px-5 py-2.5"
+                      >
+                        Request Scope Brief
+                      </Link>
+                    </div>
+
+                  </div>
+
+                  {/* Visual Card / Side Showcase (5 cols) */}
+                  <div className={`lg:col-span-5 ${isEven ? 'order-2' : 'order-2 lg:order-1'}`}>
+                    <div className="bg-[#071A3D] rounded-3xl p-8 sm:p-10 text-white relative overflow-hidden shadow-lg border-t-2 border-[#F4B323]">
+                      <div className="absolute inset-0 dot-matrix-dark opacity-25 pointer-events-none" />
+
+                      <div className="relative z-10 flex flex-col justify-between min-h-[260px]">
+                        <div>
+                          <div className="text-4xl font-black text-[#F4B323]/30 mb-4 select-none">
+                            {service.number}
+                          </div>
+                          <h3 className="text-xl font-bold text-white mb-2">
+                            {service.title}
+                          </h3>
+                          <p className="text-xs text-slate-300 leading-relaxed">
+                            Structured analytical advisory aligned with corporate risk governance, due diligence requirements, and executive decision-making.
+                          </p>
+                        </div>
+
+                        <div className="pt-6 border-t border-slate-700/80 mt-6 flex items-center justify-between text-xs text-slate-400">
+                          <span>Confidential Advisory</span>
+                          <span className="text-[#F4B323] font-bold">Defensible Insight</span>
+                        </div>
+                      </div>
                     </div>
                   </div>
+
                 </div>
+
+                {i < services.length - 1 && (
+                  <div className="w-full h-px bg-slate-200 mt-16 lg:mt-24" />
+                )}
               </motion.article>
             );
           })}
         </div>
       </section>
 
-      {/* ── Engagement Process ── */}
-      <section style={{ background: '#F8F9FB' }} className="section-pad">
+      {/* ── Engagement Timeline Component ─────────────── */}
+      <section className="bg-[#F5F7FA] py-16 lg:py-24 border-t border-slate-200/80">
         <div className="site-container">
-          <motion.div initial={{ opacity: 0, y: 14 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} viewport={{ once: true }} style={{ marginBottom: '40px' }}>
-            <span className="gold-bar" />
-            <span className="eyebrow">How We Work</span>
-            <h2 style={H2}>Our Engagement Process</h2>
-          </motion.div>
+          <div className="text-center max-w-2xl mx-auto mb-14">
+            <div className="flex items-center justify-center gap-2 mb-2">
+              <span className="w-7 h-[3px] bg-[#F4B323] rounded-full inline-block" />
+              <span className="text-[11px] font-extrabold tracking-[0.2em] text-[#071A3D] uppercase">
+                Process Protocol
+              </span>
+              <span className="w-7 h-[3px] bg-[#F4B323] rounded-full inline-block" />
+            </div>
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-[#071A3D] tracking-tight mb-4">
+              Our Engagement Process
+            </h2>
+            <p className="text-slate-600 text-sm">
+              How Opsynera partners with organizations from initial briefing to delivery of findings.
+            </p>
+          </div>
+
           <EngagementTimeline />
         </div>
       </section>
 
-      <CTASection heading="Discuss Your Requirements With Opsynera" primaryBtn="Submit an Inquiry" primaryPath="/contact" />
+      {/* ── CTA ───────────────────────────────────────── */}
+      <CTASection
+        heading="Ready to Commission a Targeted Briefing?"
+        description="Share your specific concerns with our team for an initial, confidential assessment of scope, feasibility, and timelines."
+        primaryBtn="Initiate an Inquiry"
+        primaryPath="/contact"
+        secondaryBtn="View Industries"
+        secondaryPath="/industries"
+      />
     </main>
   );
 }
