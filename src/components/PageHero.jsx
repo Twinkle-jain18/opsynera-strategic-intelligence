@@ -2,106 +2,67 @@ import { motion } from 'framer-motion';
 
 export default function PageHero({ eyebrow, heading, subtitle, description }) {
   return (
-    <section
-      style={{
-        position: 'relative',
-        background: '#0B1626',
-        overflow: 'hidden',
-      }}
-    >
-      {/* Subtle grid */}
-      <div className="hero-grid" style={{ position: 'absolute', inset: 0 }} />
+    <section className="relative bg-[#071A3D] text-white pt-[110px] pb-14 lg:pt-[130px] lg:pb-18 overflow-hidden border-b-2 border-[#F4B323]/50">
+      {/* Background dot telemetry pattern */}
+      <div className="absolute inset-0 dot-matrix-dark opacity-30 pointer-events-none" />
 
-      {/* Very faint watermark — no more bleeding through */}
-      <div
-        style={{
-          position: 'absolute',
-          right: '0',
-          top: '50%',
-          transform: 'translateY(-50%)',
-          width: '280px',
-          height: '280px',
-          backgroundImage: 'url(/logo.png)',
-          backgroundRepeat: 'no-repeat',
-          backgroundPosition: 'center',
-          backgroundSize: 'contain',
-          opacity: 0.025,
-          pointerEvents: 'none',
-        }}
-      />
+      {/* Decorative gradient glow */}
+      <div className="absolute -top-24 right-0 w-96 h-96 bg-blue-600/15 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute bottom-0 left-1/4 w-80 h-80 bg-[#F4B323]/10 rounded-full blur-3xl pointer-events-none" />
 
-      {/* Content — compact padding */}
-      <div
-        className="site-container"
-        style={{
-          position: 'relative',
-          zIndex: 2,
-          /* 68px navbar clearance + 36px breathing room = 104px top */
-          paddingTop: '104px',
-          paddingBottom: '44px',
-        }}
-      >
-        {eyebrow && (
-          <motion.span
-            className="eyebrow"
-            initial={{ opacity: 0, y: 8 }}
+      <div className="site-container relative z-10">
+        <div className="max-w-3xl">
+          
+          {/* Eyebrow / Tag */}
+          {eyebrow && (
+            <motion.div
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.35 }}
+              className="flex items-center gap-2.5 mb-3.5"
+            >
+              <span className="w-6 h-[3px] bg-[#F4B323] rounded-full inline-block" />
+              <span className="text-[11px] font-extrabold tracking-[0.2em] text-[#F4B323] uppercase">
+                {eyebrow}
+              </span>
+            </motion.div>
+          )}
+
+          {/* Main Page Title */}
+          <motion.h1
+            initial={{ opacity: 0, y: 14 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.35 }}
+            transition={{ duration: 0.45, delay: 0.06 }}
+            className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white leading-[1.15] tracking-tight mb-4"
           >
-            {eyebrow}
-          </motion.span>
-        )}
+            {heading}
+          </motion.h1>
 
-        <motion.h1
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.45, delay: 0.07 }}
-          style={{
-            fontFamily: 'Manrope, sans-serif',
-            /* Inner pages: 30px mobile → 40px desktop */
-            fontSize: 'clamp(26px, 4vw, 40px)',
-            fontWeight: 600,
-            color: '#ffffff',
-            lineHeight: 1.15,
-            marginBottom: subtitle || description ? '12px' : 0,
-            maxWidth: '680px',
-          }}
-        >
-          {heading}
-        </motion.h1>
+          {/* Subtitle */}
+          {subtitle && (
+            <motion.p
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: 0.12 }}
+              className="text-base sm:text-lg text-[#F4B323] font-semibold mb-3 leading-snug"
+            >
+              {subtitle}
+            </motion.p>
+          )}
 
-        {subtitle && (
-          <motion.p
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.35, delay: 0.14 }}
-            style={{
-              fontSize: '16px',
-              color: '#B59A67',
-              fontWeight: 400,
-              marginBottom: description ? '8px' : 0,
-            }}
-          >
-            {subtitle}
-          </motion.p>
-        )}
+          {/* Detailed Description */}
+          {description && (
+            <motion.p
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: 0.18 }}
+              className="text-sm sm:text-[15px] text-slate-300 leading-relaxed max-w-2xl font-normal"
+            >
+              {description}
+            </motion.p>
+          )}
 
-        {description && (
-          <motion.p
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.35, delay: 0.21 }}
-            style={{
-              fontSize: '14px',
-              color: '#94a3b8',
-              lineHeight: 1.75,
-              maxWidth: '540px',
-              fontWeight: 400,
-            }}
-          >
-            {description}
-          </motion.p>
-        )}
+        </div>
       </div>
     </section>
   );
