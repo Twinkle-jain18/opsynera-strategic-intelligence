@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
 import PageHero from '../components/PageHero';
+import { ShieldCheck, AlertCircle } from 'lucide-react';
 
 const sections = [
   {
@@ -57,80 +58,92 @@ const sections = [
 
 export default function PrivacyPolicy() {
   return (
-    <main>
+    <main className="bg-white">
       <PageHero
-        eyebrow="Legal"
-        heading="Privacy Policy"
-        subtitle="For Client Review Before Publication"
+        eyebrow="Compliance & Legal"
+        heading="Privacy & Confidentiality Notice"
+        subtitle="Operational Framework for Client Data Handling"
+        description="Opsynera maintains strict standards of confidentiality, lawful data processing, and client data protection across all intelligence advisory engagements."
       />
 
-      <section className="bg-white py-24 lg:py-32">
-        <div className="max-w-[1200px] mx-auto px-6 lg:px-8">
-          <div className="max-w-[720px]">
-
-            {/* Draft banner */}
-            <motion.div
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.45 }}
-              className="border-l-2 border-amber-400 bg-amber-50 pl-5 pr-5 py-4 mb-14"
-            >
-              <p className="text-amber-800 font-semibold text-sm mb-1">Draft – Requires Review Before Publication</p>
-              <p className="text-amber-700 text-xs leading-relaxed">
-                This document is a draft framework for review and approval by Opsynera and its legal advisors. It does not constitute a legally approved or published policy. Content must be verified against applicable data protection laws before this page is publicly accessible.
+      <section className="site-container py-16 lg:py-24">
+        <div className="max-w-3xl mx-auto">
+          
+          {/* Draft banner */}
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.45 }}
+            className="border-l-4 border-[#F4B323] bg-amber-50/70 p-5 rounded-r-2xl mb-12 flex items-start gap-3.5 shadow-xs"
+          >
+            <AlertCircle size={20} className="text-amber-600 flex-shrink-0 mt-0.5" />
+            <div>
+              <p className="text-amber-900 font-bold text-sm mb-1">
+                Draft Notice – For Client Review Before Final Publication
               </p>
-            </motion.div>
+              <p className="text-amber-800 text-xs leading-relaxed">
+                This document is a draft compliance framework for review by Opsynera and legal counsel. Content will be finalized in accordance with governing data protection regulations.
+              </p>
+            </div>
+          </motion.div>
 
-            {/* Sections */}
-            <div className="space-y-12">
-              {sections.map((section, i) => (
-                <motion.div
-                  key={section.title}
-                  initial={{ opacity: 0, y: 16 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.45, delay: i * 0.04 }}
-                  viewport={{ once: true }}
-                >
-                  <h2 className="text-lg font-bold text-[#0B1626] mb-1" style={{ fontFamily: 'Manrope, sans-serif' }}>
+          {/* Policy Sections */}
+          <div className="space-y-12">
+            {sections.map((section, i) => (
+              <motion.div
+                key={section.title}
+                initial={{ opacity: 0, y: 16 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.45, delay: i * 0.04 }}
+                viewport={{ once: true }}
+                className="bg-white border border-slate-200/80 rounded-2xl p-6 sm:p-8 shadow-xs"
+              >
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="w-5 h-[2px] bg-[#F4B323] rounded-full inline-block" />
+                  <h2 className="text-lg font-bold text-[#071A3D]">
                     {section.title}
                   </h2>
-                  <div className="w-8 h-px bg-[#B59A67] mb-5" />
+                </div>
 
-                  {section.content && (
-                    <p className="text-[#475569] text-sm leading-[1.8] mb-3">{section.content}</p>
-                  )}
-                  {section.intro && (
-                    <p className="text-[#475569] text-sm leading-[1.8] mb-3">{section.intro}</p>
-                  )}
-                  {section.list && (
-                    <ul className="space-y-1.5 mb-4 ml-4">
-                      {section.list.map((item) => (
-                        <li key={item} className="text-[#475569] text-sm flex items-start gap-2">
-                          <span className="text-[#B59A67] mt-1.5 flex-shrink-0">–</span>
-                          {item}
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                  {section.listNote && (
-                    <p className="text-[#475569] text-sm leading-[1.8] mb-3">{section.listNote}</p>
-                  )}
-                  {section.draft && (
-                    <p className="text-amber-700 text-xs leading-relaxed bg-amber-50 border border-amber-200 px-4 py-3 mt-3">
-                      [DRAFT NOTE: {section.draft}]
-                    </p>
-                  )}
-                </motion.div>
-              ))}
-            </div>
+                {section.content && (
+                  <p className="text-slate-600 text-sm leading-relaxed mb-4">
+                    {section.content}
+                  </p>
+                )}
 
-            {/* Footer */}
-            <div className="mt-14 pt-8 border-t border-[#E8ECF0]">
-              <p className="text-[#94a3b8] text-xs">
-                Last reviewed: [Date to be confirmed before publication] — This is a draft document and does not constitute Opsynera's published privacy policy.
-              </p>
-            </div>
+                {section.intro && (
+                  <p className="text-slate-700 text-sm font-medium mb-3">
+                    {section.intro}
+                  </p>
+                )}
+
+                {section.list && (
+                  <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-4 bg-[#F5F7FA] p-4 rounded-xl border border-slate-200/60">
+                    {section.list.map((item) => (
+                      <li key={item} className="flex items-center gap-2 text-xs text-slate-700">
+                        <span className="w-1.5 h-1.5 rounded-full bg-[#F4B323]" />
+                        <span>{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+
+                {section.listNote && (
+                  <p className="text-xs text-slate-500 italic mb-3">
+                    {section.listNote}
+                  </p>
+                )}
+
+                {section.draft && (
+                  <div className="mt-4 pt-3 border-t border-slate-100 flex items-center gap-2 text-[11px] font-semibold text-amber-700">
+                    <span className="w-2 h-2 rounded-full bg-amber-400" />
+                    <span>{section.draft}</span>
+                  </div>
+                )}
+              </motion.div>
+            ))}
           </div>
+
         </div>
       </section>
     </main>

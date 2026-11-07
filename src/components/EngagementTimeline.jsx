@@ -1,69 +1,63 @@
 import { motion } from 'framer-motion';
+import { ArrowRight, ChevronRight } from 'lucide-react';
 
 const steps = [
   {
     number: '01',
     title: 'Initial Inquiry',
-    description: "We understand the client's requirements and objectives.",
+    description: "We understand the client's strategic objectives, key concerns, and organizational risk parameters.",
   },
   {
     number: '02',
     title: 'Scope Definition',
-    description: 'We establish the scope, deliverables, timeline, and applicable fees.',
+    description: 'We establish exact research parameters, authorized channels, deliverables, timelines, and terms.',
   },
   {
     number: '03',
     title: 'Authorization & Confidentiality',
-    description: 'We confirm necessary permissions and confidentiality arrangements.',
+    description: 'We formalize permissions, non-disclosure agreements, and strict compliance boundaries.',
   },
   {
     number: '04',
     title: 'Research & Analysis',
-    description: 'We conduct the agreed work within the authorized scope.',
+    description: 'We conduct multi-source intelligence gathering, verification, and critical synthesis.',
   },
   {
     number: '05',
     title: 'Reporting & Advisory',
-    description: 'We present structured findings and explain relevant observations.',
+    description: 'We deliver defensible executive findings, scenario analyses, and actionable recommendations.',
   },
 ];
 
 export default function EngagementTimeline() {
   return (
-    <div className="engagement-grid">
+    <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
       {steps.map((step, i) => (
         <motion.div
           key={step.number}
-          className="engagement-card"
-          initial={{ opacity: 0, y: 28 }}
+          initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: i * 0.12, ease: 'easeOut' }}
-          viewport={{ once: true, margin: '-40px' }}
+          transition={{ duration: 0.45, delay: i * 0.08 }}
+          viewport={{ once: true }}
+          className="bg-white border border-slate-200/90 rounded-2xl p-6 shadow-xs hover:border-[#F4B323] hover:shadow-md transition-all duration-200 flex flex-col justify-between group"
         >
-          {/* Numbered node */}
-          <div className="engagement-number" style={{ flexShrink: 0 }}>
-            {step.number}
-          </div>
-
-          {/* Text content */}
           <div>
-            <h4 style={{
-              fontFamily: 'Manrope, sans-serif',
-              fontSize: '14px',
-              fontWeight: 600,
-              color: '#0B1626',
-              marginBottom: '6px',
-              lineHeight: 1.35,
-            }}>
+            <div className="w-10 h-10 rounded-xl bg-[#071A3D] text-[#F4B323] font-black text-xs flex items-center justify-center mb-4 group-hover:bg-[#F4B323] group-hover:text-[#071A3D] transition-colors shadow-xs">
+              {step.number}
+            </div>
+
+            <h4 className="text-sm font-bold text-[#071A3D] mb-2 leading-snug group-hover:text-[#1676C5] transition-colors">
               {step.title}
             </h4>
-            <p style={{
-              fontSize: '13px',
-              color: '#64748b',
-              lineHeight: 1.65,
-            }}>
+
+            <p className="text-xs text-slate-500 leading-relaxed">
               {step.description}
             </p>
+          </div>
+
+          <div className="mt-5 pt-3 border-t border-slate-100 flex items-center justify-between text-[11px] font-bold text-slate-400 group-hover:text-[#071A3D]">
+            <span>Phase {step.number}</span>
+            <ChevronRight size={13} className="text-[#F4B323]" />
           </div>
         </motion.div>
       ))}

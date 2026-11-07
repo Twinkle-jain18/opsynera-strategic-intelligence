@@ -1,140 +1,141 @@
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { Building2, Landmark, Monitor, Layers, Briefcase, ArrowRight } from 'lucide-react';
+import { Building2, Landmark, Monitor, Layers, Briefcase, ArrowRight, ShieldCheck } from 'lucide-react';
 import PageHero from '../components/PageHero';
 import CTASection from '../components/CTASection';
 import { industries } from '../data/industries';
 
-const iconMap = { Building2, Landmark, Monitor, Layers, Briefcase };
-
-const BODY = { fontSize: '15px', color: '#475569', lineHeight: 1.8, fontWeight: 400 };
-const H2 = { fontFamily: 'Manrope, sans-serif', fontSize: 'clamp(19px, 3vw, 28px)', fontWeight: 600, color: '#0B1626', lineHeight: 1.2 };
+const iconMap = {
+  Building2, Landmark, Monitor, Layers, Briefcase,
+};
 
 export default function Industries() {
   return (
-    <main>
+    <main className="bg-white">
       <PageHero
         eyebrow="Sectors We Serve"
         heading="Industries We Aim to Serve"
-        subtitle="Intelligence Advisory for Diverse Business Needs"
+        subtitle="Tailored Intelligence Advisory for Diverse Strategic Landscapes"
+        description="Every industry operates under distinct risk dimensions and operational dynamics. Opsynera delivers contextualized intelligence aligned with sector-specific governance."
       />
 
-      {/* ── Intro ── */}
-      <section style={{ background: '#ffffff' }} className="section-pad">
-        <div className="site-container">
-          <div className="grid-asymm" style={{ alignItems: 'start' }}>
-            <motion.div initial={{ opacity: 0, y: 14 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.45 }} viewport={{ once: true }}>
-              <span className="gold-bar" />
-              <span className="eyebrow">Our Reach</span>
-              <h2 style={H2}>Tailored Advisory for Every Sector</h2>
-            </motion.div>
-            <motion.div initial={{ opacity: 0, y: 14 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.45, delay: 0.1 }} viewport={{ once: true }}>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
-                <p style={BODY}>Different industries face different forms of uncertainty.</p>
-                <p style={BODY}>Opsynera aims to support businesses and institutions through tailored intelligence research, risk analysis, and advisory services aligned with their specific requirements.</p>
-                <p style={BODY}>Our approach focuses on understanding the context of each engagement and identifying relevant information that can support informed decisions.</p>
-              </div>
-            </motion.div>
+      {/* ── Intro Section ─────────────────────────────── */}
+      <section className="site-container py-16 lg:py-20">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 items-center">
+          
+          <div className="lg:col-span-5">
+            <div className="flex items-center gap-2 mb-3">
+              <span className="w-7 h-[3px] bg-[#F4B323] rounded-full inline-block" />
+              <span className="text-[11px] font-extrabold tracking-[0.2em] text-[#071A3D] uppercase">
+                Contextual Precision
+              </span>
+            </div>
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-[#071A3D] tracking-tight leading-tight mb-4">
+              Navigating Uncertainty Across Complex Sectors
+            </h2>
+            <p className="text-[15px] text-slate-600 leading-relaxed mb-6">
+              Different industries face vastly different forms of risk — from regulatory exposure in financial markets to vendor fraud in infrastructure projects.
+            </p>
+            <div className="flex items-center gap-2 text-xs font-bold text-[#071A3D]">
+              <ShieldCheck size={16} className="text-[#F4B323]" />
+              <span>Multi-domain analytical frameworks</span>
+            </div>
           </div>
+
+          <div className="lg:col-span-7 bg-[#F5F7FA] rounded-2xl p-6 sm:p-8 border border-slate-200/80">
+            <p className="text-sm text-slate-700 leading-relaxed mb-4">
+              Opsynera supports businesses, corporate leadership, and investment committees through tailored intelligence research, risk analysis, and confidential advisory services.
+            </p>
+            <p className="text-sm text-slate-700 leading-relaxed">
+              Our approach focuses on understanding the exact context of each sector, evaluating information critically, and identifying signals that drive informed decisions.
+            </p>
+          </div>
+
         </div>
       </section>
 
-      {/* ── Industry Cards — animated one by one ── */}
-      <section style={{ background: '#F8F9FB' }} className="section-pad">
+      {/* ── Industry Cards Grid ───────────────────────── */}
+      <section className="bg-[#F5F7FA] py-16 lg:py-24 border-t border-slate-200/80">
         <div className="site-container">
-          <div className="grid-2-sm">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {industries.map((industry, i) => {
               const Icon = iconMap[industry.icon] || Building2;
-              /* Alternate: even = slide from left, odd = slide from right */
-              const xDir = i % 2 === 0 ? -20 : 20;
 
               return (
                 <motion.div
                   key={industry.id}
-                  initial={{ opacity: 0, x: xDir, y: 12 }}
-                  whileInView={{ opacity: 1, x: 0, y: 0 }}
-                  transition={{ duration: 0.55, delay: (i % 2) * 0.1 }}
-                  viewport={{ once: true, margin: '-48px' }}
-                  className="card-hover"
-                  style={{
-                    background: '#ffffff',
-                    border: '1px solid #E2E8F0',
-                    padding: '36px 32px',
-                    display: 'flex',
-                    flexDirection: 'column',
-                  }}
+                  initial={{ opacity: 0, y: 18 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.45, delay: i * 0.08 }}
+                  viewport={{ once: true }}
+                  className="card-hover bg-white border border-slate-200/90 rounded-2xl p-7 flex flex-col justify-between shadow-xs hover:border-[#F4B323] transition-all duration-200 group"
                 >
-                  {/* Top row: icon + number */}
-                  <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '18px' }}>
-                    <div style={{
-                      width: '44px', height: '44px',
-                      background: '#0B1626',
-                      display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      flexShrink: 0,
-                    }}>
-                      <Icon size={19} color="#B59A67" />
+                  <div>
+                    {/* Header Row */}
+                    <div className="flex items-center justify-between mb-5">
+                      <div className="w-12 h-12 rounded-xl bg-[#071A3D] flex items-center justify-center flex-shrink-0 group-hover:bg-[#0B2450] transition-colors shadow-xs">
+                        <Icon size={22} className="text-[#F4B323]" strokeWidth={2} />
+                      </div>
+                      <span className="text-2xl font-black text-slate-200 select-none group-hover:text-[#F4B323]/50 transition-colors">
+                        {industry.number}
+                      </span>
                     </div>
-                    <span style={{
-                      fontSize: '32px',
-                      fontFamily: 'Manrope, sans-serif',
-                      fontWeight: 800,
-                      color: '#F1F5F9',
-                      lineHeight: 1,
-                      userSelect: 'none',
-                    }}>
-                      {industry.number}
-                    </span>
+
+                    <div className="w-6 h-[2.5px] bg-[#F4B323] rounded-full mb-3" />
+
+                    <h3 className="text-lg font-bold text-[#071A3D] mb-3 leading-snug group-hover:text-[#1676C5] transition-colors">
+                      {industry.title}
+                    </h3>
+
+                    <p className="text-xs sm:text-[13.5px] text-slate-600 leading-relaxed mb-6">
+                      {industry.description}
+                    </p>
                   </div>
 
-                  {/* Gold accent line */}
-                  <div style={{ width: '28px', height: '2px', background: '#B59A67', marginBottom: '14px' }} />
-
-                  {/* Title */}
-                  <h3 style={{
-                    fontFamily: 'Manrope, sans-serif',
-                    fontSize: '16px',
-                    fontWeight: 600,
-                    color: '#0B1626',
-                    lineHeight: 1.35,
-                    marginBottom: '12px',
-                  }}>
-                    {industry.title}
-                  </h3>
-
-                  {/* Description */}
-                  <p style={{ fontSize: '14px', color: '#475569', lineHeight: 1.8, flex: 1, marginBottom: '22px' }}>
-                    {industry.description}
-                  </p>
-
-                  {/* CTA */}
-                  <Link
-                    to="/contact"
-                    style={{
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      gap: '6px',
-                      fontSize: '11.5px',
-                      fontWeight: 700,
-                      color: '#B59A67',
-                      letterSpacing: '0.1em',
-                      textTransform: 'uppercase',
-                      textDecoration: 'none',
-                    }}
-                  >
-                    Discuss Your Requirements <ArrowRight size={11} />
-                  </Link>
+                  <div className="pt-4 border-t border-slate-100 flex items-center justify-between">
+                    <Link
+                      to={`/contact?industry=${encodeURIComponent(industry.title)}`}
+                      className="text-xs font-bold text-[#071A3D] group-hover:text-[#F4B323] transition-colors flex items-center gap-1.5 uppercase tracking-wider"
+                    >
+                      Sector Inquiry <ArrowRight size={13} className="transition-transform group-hover:translate-x-1" />
+                    </Link>
+                  </div>
                 </motion.div>
               );
             })}
+
+            {/* Custom Advisory Card */}
+            <div className="bg-[#071A3D] rounded-2xl p-7 text-white flex flex-col justify-between border-t-2 border-[#F4B323] shadow-md">
+              <div>
+                <span className="text-xs font-black tracking-widest text-[#F4B323] uppercase block mb-3">
+                  Cross-Sector Briefing
+                </span>
+                <h3 className="text-lg font-bold text-white mb-3">
+                  Tailored Intelligence Mandates
+                </h3>
+                <p className="text-xs text-slate-300 leading-relaxed mb-6">
+                  Require cross-border risk mapping, multi-jurisdictional due diligence, or bespoke OSINT briefings? We formulate specialized analytical scopes for non-standard engagements.
+                </p>
+              </div>
+
+              <div className="pt-4 border-t border-slate-700/80">
+                <Link to="/contact" className="btn-gold text-xs px-4 py-2.5 w-full justify-center">
+                  Discuss a Specialized Mandate →
+                </Link>
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
+      {/* ── CTA ───────────────────────────────────────── */}
       <CTASection
-        heading="Every Organization Faces Unique Challenges"
-        description="Connect with Opsynera to discuss your organization's specific information and risk advisory requirements."
-        primaryBtn="Contact Opsynera"
+        heading="Connect With Our Strategic Intelligence Desk"
+        description="Discuss sector-specific risks, partner due diligence, and advisory requirements under complete non-disclosure."
+        primaryBtn="Initiate an Inquiry"
         primaryPath="/contact"
+        secondaryBtn="Explore Our Services"
+        secondaryPath="/services"
       />
     </main>
   );
