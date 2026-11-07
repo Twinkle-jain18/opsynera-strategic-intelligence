@@ -21,7 +21,7 @@ import {
 import { services } from '../data/services';
 import ServiceCard from '../components/ServiceCard';
 import CTASection from '../components/CTASection';
-import RotatingGlobe from '../components/RotatingGlobe';
+import OpsyneraGlobe from '../components/OpsyneraGlobe';
 import { industries } from '../data/industries';
 
 const trustIndicators = [
@@ -103,9 +103,6 @@ export default function Home() {
 
       {/* ── 1. HERO SECTION ───────────────────────────────── */}
       <section className="relative pt-[100px] lg:pt-[124px] pb-12 lg:pb-16 bg-white overflow-hidden">
-        {/* Subtle background dotted matrix */}
-        <div className="absolute inset-0 dot-matrix-bg opacity-40 pointer-events-none" />
-
         <div className="site-container relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-4 items-center min-h-[580px]">
             
@@ -194,50 +191,16 @@ export default function Home() {
 
             </div>
 
-            {/* Right Column: Realistic 3D Rotating Globe Visual */}
-            <div className="lg:col-span-5 relative flex items-center justify-center lg:justify-end mt-4 lg:mt-0">
+            {/* Right Column: 3D Rotating Earth Globe (Package Component) */}
+            <div className="lg:col-span-5 relative flex items-center justify-center mt-4 lg:mt-0">
               <motion.div
-                initial={{ opacity: 0, scale: 0.92 }}
+                initial={{ opacity: 0, scale: 0.94 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.7, delay: 0.15 }}
-                className="relative w-full max-w-[480px] lg:max-w-[530px] aspect-square flex items-center justify-center"
+                className="relative w-full max-w-[480px] lg:max-w-[520px] aspect-square flex items-center justify-center z-10"
               >
-                {/* Subtle outer glow backdrop */}
-                <div className="absolute inset-0 bg-blue-500/10 rounded-full blur-3xl pointer-events-none" />
-
-                <RotatingGlobe />
-
-                {/* Floating telemetry badge */}
-                <motion.div
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.6, duration: 0.5 }}
-                  className="absolute -bottom-2 -left-2 sm:bottom-4 sm:left-4 z-20 bg-white/95 backdrop-blur-md border border-slate-200 rounded-xl px-4 py-2.5 shadow-lg flex items-center gap-3"
-                >
-                  <span className="relative flex h-2.5 w-2.5">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#F4B323] opacity-75"></span>
-                    <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#F4B323]"></span>
-                  </span>
-                  <div>
-                    <div className="text-[10px] font-extrabold uppercase tracking-wider text-[#071A3D]">
-                      Global Intelligence Grid
-                    </div>
-                    <div className="text-[11px] text-slate-500 font-medium">
-                      Multi-Source Analysis Active
-                    </div>
-                  </div>
-                </motion.div>
+                <OpsyneraGlobe height="100%" />
               </motion.div>
-
-              {/* Scroll Down Vertical Indicator on far right (desktop only) */}
-              <div className="hidden xl:flex absolute -right-12 top-1/2 -translate-y-1/2 flex-col items-center gap-2 select-none">
-                <div className="mouse-pill">
-                  <div className="mouse-wheel" />
-                </div>
-                <span className="text-[9.5px] font-extrabold tracking-[0.16em] uppercase text-slate-400 [writing-mode:vertical-lr]">
-                  Scroll Down
-                </span>
-              </div>
             </div>
 
           </div>
