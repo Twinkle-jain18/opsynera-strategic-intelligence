@@ -19,7 +19,7 @@ const industryIcons = {
   Building2, Landmark, Monitor, Layers, Briefcase,
 };
 
-export default function Navbar() {
+export default function Navbar({ onLogoClick }) {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [servicesDropdown, setServicesDropdown] = useState(false);
@@ -73,7 +73,12 @@ export default function Navbar() {
         <div className="site-container flex items-center justify-between">
           
           {/* Logo & Brand Identity */}
-          <Link to="/" className="flex-shrink-0" aria-label="Opsynera Strategic Intelligence Advisory">
+          <Link
+            to="/"
+            className="flex-shrink-0"
+            aria-label="Opsynera Strategic Intelligence Advisory"
+            onClick={() => onLogoClick?.()}
+          >
             <OpsyneraLogo size={38} />
           </Link>
 
@@ -95,7 +100,7 @@ export default function Navbar() {
                   {isActive && (
                     <motion.span
                       layoutId="navIndicator"
-                      className="absolute bottom-0 left-0 right-0 h-[2.5px] bg-[#F4B323] rounded-full"
+                      className="absolute bottom-0 left-0 right-0 h-[2.5px] bg-[#C49A6C] rounded-full"
                     />
                   )}
                 </>
@@ -117,7 +122,7 @@ export default function Navbar() {
                   {isActive && (
                     <motion.span
                       layoutId="navIndicator"
-                      className="absolute bottom-0 left-0 right-0 h-[2.5px] bg-[#F4B323] rounded-full"
+                      className="absolute bottom-0 left-0 right-0 h-[2.5px] bg-[#C49A6C] rounded-full"
                     />
                   )}
                 </>
@@ -141,7 +146,7 @@ export default function Navbar() {
                 }
               >
                 Services
-                <ChevronDown size={13} className={`transition-transform duration-200 ${servicesDropdown ? 'rotate-180 text-[#F4B323]' : ''}`} />
+                <ChevronDown size={13} className={`transition-transform duration-200 ${servicesDropdown ? 'rotate-180 text-[#C49A6C]' : ''}`} />
               </NavLink>
 
               <AnimatePresence>
@@ -153,7 +158,7 @@ export default function Navbar() {
                     transition={{ duration: 0.18 }}
                     className="absolute top-full -left-20 w-80 bg-white rounded-xl shadow-[0_16px_40px_rgba(7,26,61,0.14)] border border-slate-100 p-3 z-50"
                   >
-                    <div className="text-[10px] uppercase tracking-wider font-extrabold text-[#F4B323] px-3 py-1.5 border-b border-slate-100 mb-1">
+                    <div className="text-[10px] uppercase tracking-wider font-extrabold text-[#C49A6C] px-3 py-1.5 border-b border-slate-100 mb-1">
                       Our Advisory Services
                     </div>
                     {services.map((s) => {
@@ -164,8 +169,8 @@ export default function Navbar() {
                           to={`/services#${s.slug}`}
                           className="flex items-start gap-2.5 p-2.5 rounded-lg hover:bg-slate-50 transition-colors group"
                         >
-                          <div className="w-7 h-7 rounded-md bg-[#071A3D] flex items-center justify-center flex-shrink-0 group-hover:bg-[#F4B323] transition-colors mt-0.5">
-                            <Icon size={14} className="text-[#F4B323] group-hover:text-[#071A3D] transition-colors" />
+                          <div className="w-7 h-7 rounded-md bg-[#071A3D] flex items-center justify-center flex-shrink-0 group-hover:bg-[#C49A6C] transition-colors mt-0.5">
+                            <Icon size={14} className="text-[#C49A6C] group-hover:text-[#071A3D] transition-colors" />
                           </div>
                           <div>
                             <div className="text-xs font-bold text-[#071A3D] group-hover:text-[#071A3D] leading-tight">
@@ -200,7 +205,7 @@ export default function Navbar() {
                 }
               >
                 Industries
-                <ChevronDown size={13} className={`transition-transform duration-200 ${industriesDropdown ? 'rotate-180 text-[#F4B323]' : ''}`} />
+                <ChevronDown size={13} className={`transition-transform duration-200 ${industriesDropdown ? 'rotate-180 text-[#C49A6C]' : ''}`} />
               </NavLink>
 
               <AnimatePresence>
@@ -212,7 +217,7 @@ export default function Navbar() {
                     transition={{ duration: 0.18 }}
                     className="absolute top-full -left-20 w-80 bg-white rounded-xl shadow-[0_16px_40px_rgba(7,26,61,0.14)] border border-slate-100 p-3 z-50"
                   >
-                    <div className="text-[10px] uppercase tracking-wider font-extrabold text-[#F4B323] px-3 py-1.5 border-b border-slate-100 mb-1">
+                    <div className="text-[10px] uppercase tracking-wider font-extrabold text-[#C49A6C] px-3 py-1.5 border-b border-slate-100 mb-1">
                       Sectors We Serve
                     </div>
                     {industries.map((ind) => {
@@ -223,8 +228,8 @@ export default function Navbar() {
                           to={`/industries`}
                           className="flex items-start gap-2.5 p-2.5 rounded-lg hover:bg-slate-50 transition-colors group"
                         >
-                          <div className="w-7 h-7 rounded-md bg-[#071A3D] flex items-center justify-center flex-shrink-0 group-hover:bg-[#F4B323] transition-colors mt-0.5">
-                            <Icon size={14} className="text-[#F4B323] group-hover:text-[#071A3D] transition-colors" />
+                          <div className="w-7 h-7 rounded-md bg-[#071A3D] flex items-center justify-center flex-shrink-0 group-hover:bg-[#C49A6C] transition-colors mt-0.5">
+                            <Icon size={14} className="text-[#C49A6C] group-hover:text-[#071A3D] transition-colors" />
                           </div>
                           <div>
                             <div className="text-xs font-bold text-[#071A3D] group-hover:text-[#071A3D] leading-tight">
@@ -257,7 +262,7 @@ export default function Navbar() {
                   {isActive && (
                     <motion.span
                       layoutId="navIndicator"
-                      className="absolute bottom-0 left-0 right-0 h-[2.5px] bg-[#F4B323] rounded-full"
+                      className="absolute bottom-0 left-0 right-0 h-[2.5px] bg-[#C49A6C] rounded-full"
                     />
                   )}
                 </>
@@ -325,7 +330,7 @@ export default function Navbar() {
                 end
                 className={({ isActive }) =>
                   `text-base font-bold py-2 border-b border-slate-100 flex items-center justify-between ${
-                    isActive ? 'text-[#F4B323]' : 'text-[#071A3D]'
+                    isActive ? 'text-[#C49A6C]' : 'text-[#071A3D]'
                   }`
                 }
               >
@@ -336,7 +341,7 @@ export default function Navbar() {
                 to="/about"
                 className={({ isActive }) =>
                   `text-base font-bold py-2 border-b border-slate-100 flex items-center justify-between ${
-                    isActive ? 'text-[#F4B323]' : 'text-[#071A3D]'
+                    isActive ? 'text-[#C49A6C]' : 'text-[#071A3D]'
                   }`
                 }
               >
@@ -347,7 +352,7 @@ export default function Navbar() {
                 to="/services"
                 className={({ isActive }) =>
                   `text-base font-bold py-2 border-b border-slate-100 flex items-center justify-between ${
-                    isActive ? 'text-[#F4B323]' : 'text-[#071A3D]'
+                    isActive ? 'text-[#C49A6C]' : 'text-[#071A3D]'
                   }`
                 }
               >
@@ -358,7 +363,7 @@ export default function Navbar() {
                 to="/industries"
                 className={({ isActive }) =>
                   `text-base font-bold py-2 border-b border-slate-100 flex items-center justify-between ${
-                    isActive ? 'text-[#F4B323]' : 'text-[#071A3D]'
+                    isActive ? 'text-[#C49A6C]' : 'text-[#071A3D]'
                   }`
                 }
               >
@@ -369,7 +374,7 @@ export default function Navbar() {
                 to="/contact"
                 className={({ isActive }) =>
                   `text-base font-bold py-2 border-b border-slate-100 flex items-center justify-between ${
-                    isActive ? 'text-[#F4B323]' : 'text-[#071A3D]'
+                    isActive ? 'text-[#C49A6C]' : 'text-[#071A3D]'
                   }`
                 }
               >

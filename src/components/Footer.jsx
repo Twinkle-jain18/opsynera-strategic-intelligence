@@ -25,65 +25,65 @@ export default function Footer() {
             </div>
 
             <div className="flex items-center gap-2 text-xs text-slate-400">
-              <span className="w-2 h-2 rounded-full bg-[#F4B323]" />
+              <span className="w-2 h-2 rounded-full bg-[#C49A6C]" />
               <span>Advisory & Intelligence Practice</span>
             </div>
           </div>
 
           {/* Column 2: Navigation Links (Span 2) */}
           <div className="lg:col-span-2">
-            <h4 className="text-xs font-bold uppercase tracking-[0.18em] text-[#F4B323] mb-4">
+            <h4 className="text-xs font-bold uppercase tracking-[0.18em] text-[#C49A6C] mb-4">
               Navigation
             </h4>
             <ul className="space-y-2.5 text-xs text-slate-300 font-medium">
               <li>
-                <Link to="/" className="hover:text-[#F4B323] transition-colors">Home</Link>
+                <Link to="/" className="hover:text-[#C49A6C] transition-colors">Home</Link>
               </li>
               <li>
-                <Link to="/about" className="hover:text-[#F4B323] transition-colors">About Opsynera</Link>
+                <Link to="/about" className="hover:text-[#C49A6C] transition-colors">About Opsynera</Link>
               </li>
               <li>
-                <Link to="/services" className="hover:text-[#F4B323] transition-colors">Key Services</Link>
+                <Link to="/services" className="hover:text-[#C49A6C] transition-colors">Key Services</Link>
               </li>
               <li>
-                <Link to="/industries" className="hover:text-[#F4B323] transition-colors">Industries Served</Link>
+                <Link to="/industries" className="hover:text-[#C49A6C] transition-colors">Industries Served</Link>
               </li>
               <li>
-                <Link to="/contact" className="hover:text-[#F4B323] transition-colors">Contact & Inquiries</Link>
+                <Link to="/contact" className="hover:text-[#C49A6C] transition-colors">Contact & Inquiries</Link>
               </li>
             </ul>
           </div>
 
           {/* Column 3: Specialized Services (Span 3) */}
           <div className="lg:col-span-3">
-            <h4 className="text-xs font-bold uppercase tracking-[0.18em] text-[#F4B323] mb-4">
+            <h4 className="text-xs font-bold uppercase tracking-[0.18em] text-[#C49A6C] mb-4">
               Our Services
             </h4>
             <ul className="space-y-2.5 text-xs text-slate-300 font-medium">
               <li>
-                <Link to="/services#strategic-risk-advisory" className="hover:text-[#F4B323] transition-colors">Strategic Risk Advisory</Link>
+                <Link to="/services#strategic-risk-advisory" className="hover:text-[#C49A6C] transition-colors">Strategic Risk Advisory</Link>
               </li>
               <li>
-                <Link to="/services#due-diligence" className="hover:text-[#F4B323] transition-colors">Due Diligence & Background</Link>
+                <Link to="/services#due-diligence" className="hover:text-[#C49A6C] transition-colors">Due Diligence & Background</Link>
               </li>
               <li>
-                <Link to="/services#osint-research" className="hover:text-[#F4B323] transition-colors">OSINT & Intelligence Research</Link>
+                <Link to="/services#osint-research" className="hover:text-[#C49A6C] transition-colors">OSINT & Intelligence Research</Link>
               </li>
               <li>
-                <Link to="/services#cyber-digital-risk" className="hover:text-[#F4B323] transition-colors">Cyber & Digital Risk Advisory</Link>
+                <Link to="/services#cyber-digital-risk" className="hover:text-[#C49A6C] transition-colors">Cyber & Digital Risk Advisory</Link>
               </li>
               <li>
-                <Link to="/services#field-verification" className="hover:text-[#F4B323] transition-colors">Field Verification & Ground</Link>
+                <Link to="/services#field-verification" className="hover:text-[#C49A6C] transition-colors">Field Verification & Ground</Link>
               </li>
               <li>
-                <Link to="/services#corporate-intelligence" className="hover:text-[#F4B323] transition-colors">Corporate Intelligence Advisory</Link>
+                <Link to="/services#corporate-intelligence" className="hover:text-[#C49A6C] transition-colors">Corporate Intelligence Advisory</Link>
               </li>
             </ul>
           </div>
 
           {/* Column 4: Confidentiality & Inquiries (Span 3) */}
           <div className="lg:col-span-3">
-            <h4 className="text-xs font-bold uppercase tracking-[0.18em] text-[#F4B323] mb-4">
+            <h4 className="text-xs font-bold uppercase tracking-[0.18em] text-[#C49A6C] mb-4">
               Engagement & Discretion
             </h4>
             <p className="text-xs text-slate-400 leading-relaxed mb-4">
@@ -107,10 +107,10 @@ export default function Footer() {
             &copy; {year} Opsynera – Strategic Intelligence Advisory. All Rights Reserved.
           </div>
           <div className="flex items-center gap-6 text-xs">
-            <Link to="/privacy-policy" className="hover:text-[#F4B323] transition-colors">
+            <Link to="/privacy-policy" className="hover:text-[#C49A6C] transition-colors">
               Privacy & Confidentiality Notice
             </Link>
-            <Link to="/contact" className="hover:text-[#F4B323] transition-colors">
+            <Link to="/contact" className="hover:text-[#C49A6C] transition-colors">
               Contact Desk
             </Link>
           </div>

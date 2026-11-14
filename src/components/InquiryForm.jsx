@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { AlertCircle, CheckCircle2, Info, ArrowRight, Lock } from 'lucide-react';
 import { submitInquiry } from '../services/inquirySubmission';
+import { useToast } from '../context/ToastContext';
 
 const industryOptions = [
   'Corporate & Business Organizations',
@@ -53,13 +54,35 @@ function validate(data) {
   return e;
 }
 
+// ── Field wrapper — MUST be defined OUTSIDE InquiryForm ──────────
+// If defined inside, React re-creates the component type on every
+// render → inputs unmount/remount → focus lost after each keystroke.
+function Field({ label, name, required, touched, errors, children }) {
+  return (
+    <div className="flex flex-col">
+      <label htmlFor={name} className="text-xs font-bold uppercase tracking-wider text-[#071A3D] mb-1.5 flex items-center gap-1">
+        <span>{label}</span>
+        {required && <span className="text-red-500 font-bold">*</span>}
+      </label>
+      {children}
+      {touched[name] && errors[name] && (
+        <p role="alert" className="flex items-center gap-1.5 text-xs text-red-500 mt-1.5">
+          <AlertCircle size={13} />
+          <span>{errors[name]}</span>
+        </p>
+      )}
+    </div>
+  );
+}
+
 export default function InquiryForm({ preselectedService }) {
   const [searchParams] = useSearchParams();
-  const [form, setForm] = useState(initialForm);
-  const [errors, setErrors] = useState({});
-  const [touched, setTouched] = useState({});
+  const { addToast } = useToast();
+  const [form,       setForm]       = useState(initialForm);
+  const [errors,     setErrors]     = useState({});
+  const [touched,    setTouched]    = useState({});
   const [submitting, setSubmitting] = useState(false);
-  const [result, setResult] = useState(null);
+  const [result,     setResult]     = useState(null);
 
   useEffect(() => {
     const param = searchParams.get('service') || preselectedService;
@@ -96,8 +119,13 @@ export default function InquiryForm({ preselectedService }) {
     setSubmitting(false);
     setResult(res);
     if (res.success) {
+      addToast('Inquiry submitted successfully. We will be in touch shortly.', 'success', 5000);
       setForm(initialForm);
       setTouched({});
+    } else if (res.demo) {
+      addToast('Demo Mode: No inquiry was transmitted. Form is working correctly.', 'info', 5000);
+    } else {
+      addToast('Submission failed. Please try again or contact us directly.', 'error', 5000);
     }
   };
 
@@ -105,29 +133,16 @@ export default function InquiryForm({ preselectedService }) {
     `w-full px-4 py-3 text-sm text-[#071A3D] bg-white rounded-xl border transition-all duration-200 outline-none focus:ring-2 ${
       touched[name] && errors[name]
         ? 'border-red-400 focus:ring-red-200 bg-red-50/30'
-        : 'border-slate-200 focus:border-[#071A3D] focus:ring-[#F4B323]/30'
+        : 'border-slate-200 focus:border-[#071A3D] focus:ring-[#C49A6C]/30'
     }`;
 
-  const Field = ({ label, name, required, children }) => (
-    <div className="flex flex-col">
-      <label htmlFor={name} className="text-xs font-bold uppercase tracking-wider text-[#071A3D] mb-1.5 flex items-center gap-1">
-        <span>{label}</span>
-        {required && <span className="text-red-500 font-bold">*</span>}
-      </label>
-      {children}
-      {touched[name] && errors[name] && (
-        <p role="alert" className="flex items-center gap-1.5 text-xs text-red-500 mt-1.5">
-          <AlertCircle size={13} />
-          <span>{errors[name]}</span>
-        </p>
-      )}
-    </div>
-  );
+  // Shared props passed to Field so it can render error messages
+  const fp = { touched, errors };
 
   return (
     <form onSubmit={handleSubmit} noValidate className="space-y-5">
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-        <Field label="Full Name" name="fullName" required>
+        <Field label="Full Name" name="fullName" required {...fp}>
           <input
             id="fullName"
             name="fullName"
@@ -140,7 +155,7 @@ export default function InquiryForm({ preselectedService }) {
             autoComplete="name"
           />
         </Field>
-        <Field label="Company / Organization" name="company" required>
+        <Field label="Company / Organization" name="company" required {...fp}>
           <input
             id="company"
             name="company"
@@ -156,7 +171,7 @@ export default function InquiryForm({ preselectedService }) {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-        <Field label="Official Email" name="email" required>
+        <Field label="Official Email" name="email" required {...fp}>
           <input
             id="email"
             name="email"
@@ -169,7 +184,7 @@ export default function InquiryForm({ preselectedService }) {
             autoComplete="email"
           />
         </Field>
-        <Field label="Contact Number" name="phone" required>
+        <Field label="Contact Number" name="phone" required {...fp}>
           <input
             id="phone"
             name="phone"
@@ -185,7 +200,7 @@ export default function InquiryForm({ preselectedService }) {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-        <Field label="Industry Sector" name="industry" required>
+        <Field label="Industry Sector" name="industry" required {...fp}>
           <select
             id="industry"
             name="industry"
@@ -200,7 +215,7 @@ export default function InquiryForm({ preselectedService }) {
             ))}
           </select>
         </Field>
-        <Field label="Service Required" name="service" required>
+        <Field label="Service Required" name="service" required {...fp}>
           <select
             id="service"
             name="service"
@@ -217,7 +232,7 @@ export default function InquiryForm({ preselectedService }) {
         </Field>
       </div>
 
-      <Field label="Brief Description of Requirement" name="description" required>
+      <Field label="Brief Description of Requirement" name="description" required {...fp}>
         <textarea
           id="description"
           name="description"
@@ -229,7 +244,7 @@ export default function InquiryForm({ preselectedService }) {
         />
       </Field>
 
-      <Field label="Preferred Contact Method" name="contactMethod" required>
+      <Field label="Preferred Contact Method" name="contactMethod" required {...fp}>
         <select
           id="contactMethod"
           name="contactMethod"
@@ -245,7 +260,7 @@ export default function InquiryForm({ preselectedService }) {
         </select>
       </Field>
 
-      {/* Confidentiality and privacy checkbox */}
+      {/* Privacy checkbox */}
       <div className="bg-[#F5F7FA] border border-slate-200/90 rounded-xl p-4">
         <div className="flex items-start gap-3">
           <input
@@ -255,12 +270,12 @@ export default function InquiryForm({ preselectedService }) {
             checked={form.privacyAck}
             onChange={handleChange}
             onBlur={handleBlur}
-            className="w-4 h-4 rounded mt-1 accent-[#F4B323] cursor-pointer"
+            className="w-4 h-4 rounded mt-1 accent-[#C49A6C] cursor-pointer"
           />
           <label htmlFor="privacyAck" className="text-xs text-slate-600 leading-relaxed cursor-pointer select-none">
             I confirm that this inquiry is made on behalf of an eligible entity and consent to Opsynera handling this information in strict accordance with the{' '}
-            <Link to="/privacy-policy" target="_blank" rel="noopener noreferrer" className="text-[#071A3D] font-bold underline hover:text-[#F4B323]">
-              Privacy & Confidentiality Notice
+            <Link to="/privacy-policy" target="_blank" rel="noopener noreferrer" className="text-[#071A3D] font-bold underline hover:text-[#C49A6C]">
+              Privacy &amp; Confidentiality Notice
             </Link>.
           </label>
         </div>
@@ -272,7 +287,7 @@ export default function InquiryForm({ preselectedService }) {
         )}
       </div>
 
-      {/* Result notification banner */}
+      {/* Result banner */}
       {result && (
         <div
           role="status"
@@ -300,7 +315,7 @@ export default function InquiryForm({ preselectedService }) {
         </div>
       )}
 
-      {/* Submit button */}
+      {/* Submit */}
       <button
         type="submit"
         disabled={submitting}
@@ -309,8 +324,8 @@ export default function InquiryForm({ preselectedService }) {
         {submitting ? (
           <>
             <svg className="animate-spin h-4 w-4 text-[#071A3D]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
             </svg>
             <span>Transmitting Inquiry…</span>
           </>

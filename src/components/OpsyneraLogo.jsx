@@ -39,7 +39,7 @@ export default function OpsyneraLogo({ dark = false, size = 42, showSubtitle = t
         {showSubtitle && (
           <span
             className={`text-[8.5px] sm:text-[9.5px] font-bold tracking-[0.14em] uppercase leading-none mt-1 ${
-              dark ? 'text-[#F4B323]' : 'text-[#071A3D]/70'
+              dark ? 'text-[#C49A6C]' : 'text-[#071A3D]/70'
             }`}
             style={{ letterSpacing: '0.14em' }}
           >

@@ -74,7 +74,7 @@ export default function PrivacyPolicy() {
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.45 }}
-            className="border-l-4 border-[#F4B323] bg-amber-50/70 p-5 rounded-r-2xl mb-12 flex items-start gap-3.5 shadow-xs"
+            className="border-l-4 border-[#C49A6C] bg-amber-50/70 p-5 rounded-r-2xl mb-12 flex items-start gap-3.5 shadow-xs"
           >
             <AlertCircle size={20} className="text-amber-600 flex-shrink-0 mt-0.5" />
             <div>
@@ -99,7 +99,7 @@ export default function PrivacyPolicy() {
                 className="bg-white border border-slate-200/80 rounded-2xl p-6 sm:p-8 shadow-xs"
               >
                 <div className="flex items-center gap-2 mb-2">
-                  <span className="w-5 h-[2px] bg-[#F4B323] rounded-full inline-block" />
+                  <span className="w-5 h-[2px] bg-[#C49A6C] rounded-full inline-block" />
                   <h2 className="text-lg font-bold text-[#071A3D]">
                     {section.title}
                   </h2>
@@ -121,7 +121,7 @@ export default function PrivacyPolicy() {
                   <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-4 bg-[#F5F7FA] p-4 rounded-xl border border-slate-200/60">
                     {section.list.map((item) => (
                       <li key={item} className="flex items-center gap-2 text-xs text-slate-700">
-                        <span className="w-1.5 h-1.5 rounded-full bg-[#F4B323]" />
+                        <span className="w-1.5 h-1.5 rounded-full bg-[#C49A6C]" />
                         <span>{item}</span>
                       </li>
                     ))}

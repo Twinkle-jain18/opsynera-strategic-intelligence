@@ -39,10 +39,10 @@ export default function EngagementTimeline() {
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.45, delay: i * 0.08 }}
           viewport={{ once: true }}
-          className="bg-white border border-slate-200/90 rounded-2xl p-6 shadow-xs hover:border-[#F4B323] hover:shadow-md transition-all duration-200 flex flex-col justify-between group"
+          className="bg-white border border-slate-200/90 rounded-2xl p-6 shadow-xs hover:border-[#C49A6C] hover:shadow-md transition-all duration-200 flex flex-col justify-between group"
         >
           <div>
-            <div className="w-10 h-10 rounded-xl bg-[#071A3D] text-[#F4B323] font-black text-xs flex items-center justify-center mb-4 group-hover:bg-[#F4B323] group-hover:text-[#071A3D] transition-colors shadow-xs">
+            <div className="w-10 h-10 rounded-xl bg-[#071A3D] text-[#C49A6C] font-black text-xs flex items-center justify-center mb-4 group-hover:bg-[#C49A6C] group-hover:text-[#071A3D] transition-colors shadow-xs">
               {step.number}
             </div>
 
@@ -57,7 +57,7 @@ export default function EngagementTimeline() {
 
           <div className="mt-5 pt-3 border-t border-slate-100 flex items-center justify-between text-[11px] font-bold text-slate-400 group-hover:text-[#071A3D]">
             <span>Phase {step.number}</span>
-            <ChevronRight size={13} className="text-[#F4B323]" />
+            <ChevronRight size={13} className="text-[#C49A6C]" />
           </div>
         </motion.div>
       ))}

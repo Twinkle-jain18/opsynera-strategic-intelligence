@@ -20,15 +20,15 @@ export default function ServiceCard({ service, index }) {
       whileInView={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.45, delay: index * 0.06 }}
       viewport={{ once: true }}
-      className="card-hover bg-white border border-slate-200/90 rounded-2xl p-7 flex flex-col justify-between shadow-xs hover:border-[#F4B323] transition-all duration-200 group"
+      className="card-hover bg-white border border-slate-200/90 rounded-2xl p-7 flex flex-col justify-between shadow-xs hover:border-[#C49A6C] transition-all duration-200 group"
     >
       <div>
         {/* Header row: Icon & Number */}
         <div className="flex items-center justify-between mb-5">
           <div className="w-11 h-11 rounded-xl bg-[#071A3D] flex items-center justify-center flex-shrink-0 group-hover:bg-[#0B2450] transition-colors shadow-sm">
-            <Icon size={20} className="text-[#F4B323]" strokeWidth={2} />
+            <Icon size={20} className="text-[#C49A6C]" strokeWidth={2} />
           </div>
-          <span className="text-xs font-black tracking-widest text-[#F4B323] uppercase">
+          <span className="text-xs font-black tracking-widest text-[#C49A6C] uppercase">
             Service {service.number}
           </span>
         </div>
@@ -48,7 +48,7 @@ export default function ServiceCard({ service, index }) {
       <div className="pt-4 border-t border-slate-100 flex items-center justify-between">
         <Link
           to={`/services#${service.slug}`}
-          className="text-xs font-bold text-[#071A3D] group-hover:text-[#F4B323] transition-colors flex items-center gap-1.5 uppercase tracking-wider"
+          className="text-xs font-bold text-[#071A3D] group-hover:text-[#C49A6C] transition-colors flex items-center gap-1.5 uppercase tracking-wider"
           aria-label={`Explore ${service.title}`}
         >
           Explore Service <ArrowRight size={13} className="transition-transform group-hover:translate-x-1" />

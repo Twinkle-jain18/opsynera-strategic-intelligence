@@ -22,7 +22,7 @@ function Earth() {
 
   useFrame((_, delta) => {
     if (earthRef.current) {
-      earthRef.current.rotation.y += delta * 0.045;
+      earthRef.current.rotation.y += delta * 0.085;
     }
   });
 

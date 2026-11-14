@@ -11,7 +11,7 @@ export default function CTASection({
   secondaryPath = '/services',
 }) {
   return (
-    <section className="bg-[#071A3D] text-white py-16 lg:py-20 relative overflow-hidden border-t-2 border-[#F4B323]">
+    <section className="bg-[#071A3D] text-white py-16 lg:py-20 relative overflow-hidden border-t-2 border-[#C49A6C]">
       {/* Background subtle telemetry dots */}
       <div className="absolute inset-0 dot-matrix-dark opacity-20 pointer-events-none" />
 
@@ -26,8 +26,8 @@ export default function CTASection({
           {/* Text block */}
           <div className="max-w-2xl">
             <div className="flex items-center gap-2 mb-3">
-              <span className="w-6 h-[3px] bg-[#F4B323] rounded-full inline-block" />
-              <span className="text-[10.5px] font-extrabold tracking-[0.2em] text-[#F4B323] uppercase">
+              <span className="w-6 h-[3px] bg-[#C49A6C] rounded-full inline-block" />
+              <span className="text-[10.5px] font-extrabold tracking-[0.2em] text-[#C49A6C] uppercase">
                 Confidential Engagement
               </span>
             </div>
@@ -43,7 +43,7 @@ export default function CTASection({
             )}
 
             <div className="flex items-center gap-2 mt-4 text-xs text-slate-400">
-              <ShieldCheck size={15} className="text-[#F4B323]" />
+              <ShieldCheck size={15} className="text-[#C49A6C]" />
               <span>All inquiries are held in strict legal and commercial confidentiality.</span>
             </div>
           </div>

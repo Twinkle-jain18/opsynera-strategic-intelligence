@@ -1,15 +1,16 @@
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { Building2, Landmark, Monitor, Layers, Briefcase, ArrowRight, ShieldCheck } from 'lucide-react';
+import { Building2, Landmark, Monitor, Layers, Briefcase, ShieldCheck } from 'lucide-react';
 import PageHero from '../components/PageHero';
 import CTASection from '../components/CTASection';
-import { industries } from '../data/industries';
+import { useSiteData } from '../context/SiteDataContext';
 
 const iconMap = {
   Building2, Landmark, Monitor, Layers, Briefcase,
 };
 
 export default function Industries() {
+  const { industries } = useSiteData();
   return (
     <main className="bg-white">
       <PageHero
@@ -25,7 +26,7 @@ export default function Industries() {
           
           <div className="lg:col-span-5">
             <div className="flex items-center gap-2 mb-3">
-              <span className="w-7 h-[3px] bg-[#F4B323] rounded-full inline-block" />
+              <span className="w-7 h-[3px] bg-[#C49A6C] rounded-full inline-block" />
               <span className="text-[11px] font-extrabold tracking-[0.2em] text-[#071A3D] uppercase">
                 Contextual Precision
               </span>
@@ -37,7 +38,7 @@ export default function Industries() {
               Different industries face vastly different forms of risk — from regulatory exposure in financial markets to vendor fraud in infrastructure projects.
             </p>
             <div className="flex items-center gap-2 text-xs font-bold text-[#071A3D]">
-              <ShieldCheck size={16} className="text-[#F4B323]" />
+              <ShieldCheck size={16} className="text-[#C49A6C]" />
               <span>Multi-domain analytical frameworks</span>
             </div>
           </div>
@@ -68,46 +69,37 @@ export default function Industries() {
                   whileInView={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.45, delay: i * 0.08 }}
                   viewport={{ once: true }}
-                  className="card-hover bg-white border border-slate-200/90 rounded-2xl p-7 flex flex-col justify-between shadow-xs hover:border-[#F4B323] transition-all duration-200 group"
+                  className="card-hover bg-white border border-slate-200/90 rounded-2xl p-7 flex flex-col justify-between shadow-xs hover:border-[#C49A6C] transition-all duration-200 group"
                 >
                   <div>
                     {/* Header Row */}
                     <div className="flex items-center justify-between mb-5">
                       <div className="w-12 h-12 rounded-xl bg-[#071A3D] flex items-center justify-center flex-shrink-0 group-hover:bg-[#0B2450] transition-colors shadow-xs">
-                        <Icon size={22} className="text-[#F4B323]" strokeWidth={2} />
+                        <Icon size={22} className="text-[#C49A6C]" strokeWidth={2} />
                       </div>
-                      <span className="text-2xl font-black text-slate-200 select-none group-hover:text-[#F4B323]/50 transition-colors">
+                      <span className="text-2xl font-black text-slate-200 select-none group-hover:text-[#C49A6C]/50 transition-colors">
                         {industry.number}
                       </span>
                     </div>
 
-                    <div className="w-6 h-[2.5px] bg-[#F4B323] rounded-full mb-3" />
+                    <div className="w-6 h-[2.5px] bg-[#C49A6C] rounded-full mb-3" />
 
                     <h3 className="text-lg font-bold text-[#071A3D] mb-3 leading-snug group-hover:text-[#1676C5] transition-colors">
                       {industry.title}
                     </h3>
 
-                    <p className="text-xs sm:text-[13.5px] text-slate-600 leading-relaxed mb-6">
+                    <p className="text-xs sm:text-[13.5px] text-slate-600 leading-relaxed">
                       {industry.description}
                     </p>
-                  </div>
-
-                  <div className="pt-4 border-t border-slate-100 flex items-center justify-between">
-                    <Link
-                      to={`/contact?industry=${encodeURIComponent(industry.title)}`}
-                      className="text-xs font-bold text-[#071A3D] group-hover:text-[#F4B323] transition-colors flex items-center gap-1.5 uppercase tracking-wider"
-                    >
-                      Sector Inquiry <ArrowRight size={13} className="transition-transform group-hover:translate-x-1" />
-                    </Link>
                   </div>
                 </motion.div>
               );
             })}
 
             {/* Custom Advisory Card */}
-            <div className="bg-[#071A3D] rounded-2xl p-7 text-white flex flex-col justify-between border-t-2 border-[#F4B323] shadow-md">
+            <div className="bg-[#071A3D] rounded-2xl p-7 text-white flex flex-col justify-between border-t-2 border-[#C49A6C] shadow-md">
               <div>
-                <span className="text-xs font-black tracking-widest text-[#F4B323] uppercase block mb-3">
+                <span className="text-xs font-black tracking-widest text-[#C49A6C] uppercase block mb-3">
                   Cross-Sector Briefing
                 </span>
                 <h3 className="text-lg font-bold text-white mb-3">

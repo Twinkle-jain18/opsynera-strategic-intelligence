@@ -4,7 +4,7 @@ import { ShieldCheck, Search, Globe, Zap, MapPin, BarChart2, CheckCircle2, Alert
 import PageHero from '../components/PageHero';
 import EngagementTimeline from '../components/EngagementTimeline';
 import CTASection from '../components/CTASection';
-import { services } from '../data/services';
+import { useSiteData } from '../context/SiteDataContext';
 
 const serviceIcons = {
   'strategic-risk-advisory': ShieldCheck,
@@ -16,6 +16,7 @@ const serviceIcons = {
 };
 
 export default function Services() {
+  const { services } = useSiteData();
   return (
     <main className="bg-white">
       <PageHero
@@ -52,9 +53,9 @@ export default function Services() {
                     {/* Header badge */}
                     <div className="flex items-center gap-2 mb-3">
                       <div className="w-8 h-8 rounded-lg bg-[#071A3D] flex items-center justify-center flex-shrink-0">
-                        <Icon size={16} className="text-[#F4B323]" />
+                        <Icon size={16} className="text-[#C49A6C]" />
                       </div>
-                      <span className="text-xs font-black tracking-widest text-[#F4B323] uppercase">
+                      <span className="text-xs font-black tracking-widest text-[#C49A6C] uppercase">
                         Service {service.number}
                       </span>
                     </div>
@@ -75,7 +76,7 @@ export default function Services() {
                       <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         {service.offerings.map((item) => (
                           <li key={item} className="flex items-start gap-2.5">
-                            <CheckCircle2 size={15} className="text-[#F4B323] flex-shrink-0 mt-0.5" />
+                            <CheckCircle2 size={15} className="text-[#C49A6C] flex-shrink-0 mt-0.5" />
                             <span className="text-xs sm:text-[13px] text-slate-700 leading-snug">
                               {item}
                             </span>
@@ -113,12 +114,12 @@ export default function Services() {
 
                   {/* Visual Card / Side Showcase (5 cols) */}
                   <div className={`lg:col-span-5 ${isEven ? 'order-2' : 'order-2 lg:order-1'}`}>
-                    <div className="bg-[#071A3D] rounded-3xl p-8 sm:p-10 text-white relative overflow-hidden shadow-lg border-t-2 border-[#F4B323]">
+                    <div className="bg-[#071A3D] rounded-3xl p-8 sm:p-10 text-white relative overflow-hidden shadow-lg border-t-2 border-[#C49A6C]">
                       <div className="absolute inset-0 dot-matrix-dark opacity-25 pointer-events-none" />
 
                       <div className="relative z-10 flex flex-col justify-between min-h-[260px]">
                         <div>
-                          <div className="text-4xl font-black text-[#F4B323]/30 mb-4 select-none">
+                          <div className="text-4xl font-black text-[#C49A6C]/30 mb-4 select-none">
                             {service.number}
                           </div>
                           <h3 className="text-xl font-bold text-white mb-2">
@@ -131,7 +132,7 @@ export default function Services() {
 
                         <div className="pt-6 border-t border-slate-700/80 mt-6 flex items-center justify-between text-xs text-slate-400">
                           <span>Confidential Advisory</span>
-                          <span className="text-[#F4B323] font-bold">Defensible Insight</span>
+                          <span className="text-[#C49A6C] font-bold">Defensible Insight</span>
                         </div>
                       </div>
                     </div>
@@ -153,11 +154,11 @@ export default function Services() {
         <div className="site-container">
           <div className="text-center max-w-2xl mx-auto mb-14">
             <div className="flex items-center justify-center gap-2 mb-2">
-              <span className="w-7 h-[3px] bg-[#F4B323] rounded-full inline-block" />
+              <span className="w-7 h-[3px] bg-[#C49A6C] rounded-full inline-block" />
               <span className="text-[11px] font-extrabold tracking-[0.2em] text-[#071A3D] uppercase">
                 Process Protocol
               </span>
-              <span className="w-7 h-[3px] bg-[#F4B323] rounded-full inline-block" />
+              <span className="w-7 h-[3px] bg-[#C49A6C] rounded-full inline-block" />
             </div>
             <h2 className="text-3xl sm:text-4xl font-extrabold text-[#071A3D] tracking-tight mb-4">
               Our Engagement Process

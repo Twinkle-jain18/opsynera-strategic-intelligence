@@ -31,7 +31,7 @@ export default function Contact() {
           >
             <div>
               <div className="flex items-center gap-2 mb-3">
-                <span className="w-7 h-[3px] bg-[#F4B323] rounded-full inline-block" />
+                <span className="w-7 h-[3px] bg-[#C49A6C] rounded-full inline-block" />
                 <span className="text-[11px] font-extrabold tracking-[0.2em] text-[#071A3D] uppercase">
                   Engagement Protocol
                 </span>
@@ -48,7 +48,7 @@ export default function Contact() {
               {/* Security & Confidentiality assurance cards */}
               <div className="space-y-3.5 mb-8">
                 <div className="flex items-start gap-3 p-3.5 bg-[#F5F7FA] rounded-xl border border-slate-200/80">
-                  <Lock size={16} className="text-[#F4B323] flex-shrink-0 mt-0.5" />
+                  <Lock size={16} className="text-[#C49A6C] flex-shrink-0 mt-0.5" />
                   <div className="text-xs text-slate-700 leading-snug">
                     <strong className="text-[#071A3D] block mb-0.5">Strict Confidentiality</strong>
                     All communications are treated with rigorous professional discretion and non-disclosure standards.
@@ -56,7 +56,7 @@ export default function Contact() {
                 </div>
 
                 <div className="flex items-start gap-3 p-3.5 bg-[#F5F7FA] rounded-xl border border-slate-200/80">
-                  <ShieldCheck size={16} className="text-[#F4B323] flex-shrink-0 mt-0.5" />
+                  <ShieldCheck size={16} className="text-[#C49A6C] flex-shrink-0 mt-0.5" />
                   <div className="text-xs text-slate-700 leading-snug">
                     <strong className="text-[#071A3D] block mb-0.5">Lawful Research Mandates</strong>
                     All advisory scopes are conducted strictly within authorized legal boundaries and ethical frameworks.
@@ -68,7 +68,7 @@ export default function Contact() {
                 <div className="space-y-4 pt-6 border-t border-slate-200">
                   {contact.email && (
                     <div>
-                      <span className="text-[10px] font-extrabold uppercase tracking-widest text-[#F4B323] block mb-1">
+                      <span className="text-[10px] font-extrabold uppercase tracking-widest text-[#C49A6C] block mb-1">
                         Direct Email
                       </span>
                       <a href={`mailto:${contact.email}`} className="text-sm font-bold text-[#071A3D] hover:underline">
@@ -78,7 +78,7 @@ export default function Contact() {
                   )}
                   {contact.phone && (
                     <div>
-                      <span className="text-[10px] font-extrabold uppercase tracking-widest text-[#F4B323] block mb-1">
+                      <span className="text-[10px] font-extrabold uppercase tracking-widest text-[#C49A6C] block mb-1">
                         Advisory Desk
                       </span>
                       <span className="text-sm font-bold text-[#071A3D]">{contact.phone}</span>
@@ -102,7 +102,7 @@ export default function Contact() {
               </p>
               <p>
                 Handled in accordance with our{' '}
-                <Link to="/privacy-policy" className="text-[#071A3D] font-bold hover:text-[#F4B323] underline">
+                <Link to="/privacy-policy" className="text-[#071A3D] font-bold hover:text-[#C49A6C] underline">
                   Privacy & Confidentiality Notice
                 </Link>.
               </p>
@@ -118,7 +118,7 @@ export default function Contact() {
             className="lg:col-span-7 bg-white rounded-3xl p-8 sm:p-10 border border-slate-200/90 shadow-md"
           >
             <div className="mb-6">
-              <span className="w-6 h-[3px] bg-[#F4B323] rounded-full inline-block mb-2" />
+              <span className="w-6 h-[3px] bg-[#C49A6C] rounded-full inline-block mb-2" />
               <h3 className="text-xl sm:text-2xl font-extrabold text-[#071A3D] mb-1">
                 Advisory Inquiry Form
               </h3>

@@ -18,11 +18,10 @@ import {
   ChevronRight,
   MessageCircle
 } from 'lucide-react';
-import { services } from '../data/services';
+import { useSiteData } from '../context/SiteDataContext';
 import ServiceCard from '../components/ServiceCard';
 import CTASection from '../components/CTASection';
-import OpsyneraGlobe from '../components/OpsyneraGlobe';
-import { industries } from '../data/industries';
+import RotatingGlobe from '../components/RotatingGlobe';
 
 const trustIndicators = [
   {
@@ -98,11 +97,12 @@ const methodologySteps = [
 ];
 
 export default function Home() {
+  const { services, industries } = useSiteData();
   return (
     <main className="bg-white overflow-hidden">
 
       {/* ── 1. HERO SECTION ───────────────────────────────── */}
-      <section className="relative pt-[100px] lg:pt-[124px] pb-12 lg:pb-16 bg-white overflow-hidden">
+      <section className="relative pt-[72px] lg:pt-[84px] pb-10 lg:pb-14 bg-white overflow-hidden">
         <div className="site-container relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-4 items-center min-h-[580px]">
             
@@ -116,7 +116,7 @@ export default function Home() {
                 transition={{ duration: 0.4 }}
                 className="flex items-center gap-2.5 mb-4"
               >
-                <span className="w-7 h-[3px] bg-[#F4B323] rounded-full inline-block" />
+                <span className="w-7 h-[3px] bg-[#C49A6C] rounded-full inline-block" />
                 <span className="text-[11px] sm:text-[12px] font-extrabold tracking-[0.2em] text-[#071A3D] uppercase">
                   Strategic Intelligence Advisory
                 </span>
@@ -130,7 +130,7 @@ export default function Home() {
                 className="text-4xl sm:text-5xl lg:text-[54px] xl:text-[58px] font-extrabold text-[#071A3D] leading-[1.12] tracking-tight mb-5"
               >
                 Security Consultancy for{' '}
-                <span className="text-[#F4B323] inline-block">Better Decisions</span>
+                <span className="text-[#C49A6C] inline-block">Better Decisions</span>
               </motion.h1>
 
               {/* Supporting Paragraph */}
@@ -157,7 +157,7 @@ export default function Home() {
                   <MessageCircle size={16} className="text-[#071A3D]" />
                   WhatsApp Us
                 </Link>
-                <Link to="/services" className="text-xs font-bold text-[#071A3D] hover:text-[#F4B323] transition-colors ml-2 flex items-center gap-1">
+                <Link to="/services" className="text-xs font-bold text-[#071A3D] hover:text-[#C49A6C] transition-colors ml-2 flex items-center gap-1">
                   Explore Services <ChevronRight size={14} />
                 </Link>
               </motion.div>
@@ -171,8 +171,8 @@ export default function Home() {
               >
                 {trustIndicators.map((item, idx) => (
                   <div key={item.title} className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-lg bg-white border border-[#F4B323]/40 shadow-sm flex items-center justify-center flex-shrink-0">
-                      <item.Icon size={19} className="text-[#F4B323]" strokeWidth={2} />
+                    <div className="w-10 h-10 rounded-lg bg-white border border-[#C49A6C]/40 shadow-sm flex items-center justify-center flex-shrink-0">
+                      <item.Icon size={19} className="text-[#C49A6C]" strokeWidth={2} />
                     </div>
                     <div className="leading-tight">
                       <div className="text-[12.5px] font-bold text-[#071A3D]">
@@ -199,7 +199,7 @@ export default function Home() {
                 transition={{ duration: 0.7, delay: 0.15 }}
                 className="relative w-full max-w-[480px] lg:max-w-[520px] aspect-square flex items-center justify-center z-10"
               >
-                <OpsyneraGlobe height="100%" />
+                <RotatingGlobe />
               </motion.div>
             </div>
 
@@ -210,12 +210,12 @@ export default function Home() {
 
       {/* ── 2. KEY SERVICES SHOWCASE PANEL ────────────────── */}
       <section className="relative site-container pb-14 lg:pb-16">
-        <div className="bg-[#071A3D] rounded-2xl sm:rounded-3xl shadow-[0_20px_50px_rgba(7,26,61,0.22)] p-6 sm:p-8 lg:p-9 border-t-2 border-[#F4B323]/50">
+        <div className="bg-[#071A3D] rounded-2xl sm:rounded-3xl shadow-[0_20px_50px_rgba(7,26,61,0.22)] p-6 sm:p-8 lg:p-9 border-t-2 border-[#C49A6C]/50">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-center">
             
             {/* Left Header Portion */}
             <div className="lg:col-span-3 lg:border-r lg:border-slate-700/60 lg:pr-6">
-              <span className="w-6 h-[3px] bg-[#F4B323] rounded-full inline-block mb-2" />
+              <span className="w-6 h-[3px] bg-[#C49A6C] rounded-full inline-block mb-2" />
               <h2 className="text-xl sm:text-2xl font-extrabold text-white leading-tight mb-2">
                 Our Key Services
               </h2>
@@ -237,9 +237,9 @@ export default function Home() {
                     }`}
                   >
                     <div className="w-10 h-10 rounded-lg flex items-center justify-center mb-2.5 transition-transform duration-200 group-hover:scale-110">
-                      <Icon size={22} className="text-[#F4B323]" strokeWidth={1.8} />
+                      <Icon size={22} className="text-[#C49A6C]" strokeWidth={1.8} />
                     </div>
-                    <span className="text-[12px] font-bold text-white group-hover:text-[#F4B323] leading-snug transition-colors">
+                    <span className="text-[12px] font-bold text-white group-hover:text-[#C49A6C] leading-snug transition-colors">
                       {service.title}
                     </span>
                   </Link>
@@ -259,7 +259,7 @@ export default function Home() {
           {/* Left Column: About Narrative */}
           <div className="lg:col-span-6">
             <div className="flex items-center gap-2 mb-3">
-              <span className="w-7 h-[3px] bg-[#F4B323] rounded-full inline-block" />
+              <span className="w-7 h-[3px] bg-[#C49A6C] rounded-full inline-block" />
               <span className="text-[11px] font-extrabold tracking-[0.2em] text-[#071A3D] uppercase">
                 About Opsynera
               </span>
@@ -267,7 +267,7 @@ export default function Home() {
 
             <h2 className="text-3xl sm:text-4xl font-extrabold text-[#071A3D] leading-[1.18] tracking-tight mb-5">
               Bringing Clarity to{' '}
-              <span className="text-[#F4B323]">Complex Situations.</span>
+              <span className="text-[#C49A6C]">Complex Situations.</span>
             </h2>
 
             <p className="text-[15px] sm:text-[16px] text-slate-600 leading-relaxed mb-6">
@@ -295,10 +295,10 @@ export default function Home() {
                 return (
                   <div
                     key={val.name}
-                    className="flex flex-col items-center text-center p-3 rounded-xl border border-slate-100 bg-[#F5F7FA] hover:bg-white hover:border-[#F4B323] transition-all duration-200 shadow-sm"
+                    className="flex flex-col items-center text-center p-3 rounded-xl border border-slate-100 bg-[#F5F7FA] hover:bg-white hover:border-[#C49A6C] transition-all duration-200 shadow-sm"
                   >
                     <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center mb-3 shadow-xs">
-                      <Icon size={20} className="text-[#F4B323]" strokeWidth={2} />
+                      <Icon size={20} className="text-[#C49A6C]" strokeWidth={2} />
                     </div>
                     <span className="text-xs font-bold text-[#071A3D] leading-tight">
                       {val.name}
@@ -309,7 +309,7 @@ export default function Home() {
             </div>
 
             <div className="mt-8 p-4 bg-slate-50 border border-slate-200/80 rounded-xl flex items-start gap-3">
-              <ShieldCheck size={18} className="text-[#F4B323] flex-shrink-0 mt-0.5" />
+              <ShieldCheck size={18} className="text-[#C49A6C] flex-shrink-0 mt-0.5" />
               <p className="text-xs text-slate-600 leading-relaxed">
                 <strong className="text-[#071A3D]">Confidentiality Guarantee:</strong> Every advisory engagement is conducted with strict professional discretion and in strict alignment with legal boundaries.
               </p>
@@ -327,7 +327,7 @@ export default function Home() {
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
             <div>
               <div className="flex items-center gap-2 mb-2">
-                <span className="w-7 h-[3px] bg-[#F4B323] rounded-full inline-block" />
+                <span className="w-7 h-[3px] bg-[#C49A6C] rounded-full inline-block" />
                 <span className="text-[11px] font-extrabold tracking-[0.2em] text-[#071A3D] uppercase">
                   Areas of Expertise
                 </span>
@@ -355,11 +355,11 @@ export default function Home() {
       <section className="site-container py-16 lg:py-24">
         <div className="text-center max-w-2xl mx-auto mb-14">
           <div className="flex items-center justify-center gap-2 mb-2">
-            <span className="w-7 h-[3px] bg-[#F4B323] rounded-full inline-block" />
+            <span className="w-7 h-[3px] bg-[#C49A6C] rounded-full inline-block" />
             <span className="text-[11px] font-extrabold tracking-[0.2em] text-[#071A3D] uppercase">
               Our Methodology
             </span>
-            <span className="w-7 h-[3px] bg-[#F4B323] rounded-full inline-block" />
+            <span className="w-7 h-[3px] bg-[#C49A6C] rounded-full inline-block" />
           </div>
           <h2 className="text-3xl sm:text-4xl font-extrabold text-[#071A3D] tracking-tight mb-4">
             A Structured Approach to Every Engagement
@@ -377,10 +377,10 @@ export default function Home() {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4, delay: idx * 0.08 }}
               viewport={{ once: true }}
-              className="bg-white border border-slate-200 rounded-xl p-5 hover:border-[#F4B323] hover:shadow-md transition-all duration-200 flex flex-col justify-between group"
+              className="bg-white border border-slate-200 rounded-xl p-5 hover:border-[#C49A6C] hover:shadow-md transition-all duration-200 flex flex-col justify-between group"
             >
               <div>
-                <span className="text-xs font-black tracking-widest text-[#F4B323] uppercase block mb-3">
+                <span className="text-xs font-black tracking-widest text-[#C49A6C] uppercase block mb-3">
                   Phase {step.number}
                 </span>
                 <h4 className="text-sm font-bold text-[#071A3D] mb-2 leading-snug group-hover:text-[#1676C5] transition-colors">
@@ -392,7 +392,7 @@ export default function Home() {
               </div>
               <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-[11px] font-bold text-slate-400 group-hover:text-[#071A3D] transition-colors">
                 <span>Step {idx + 1} of 5</span>
-                <ChevronRight size={13} className="text-[#F4B323]" />
+                <ChevronRight size={13} className="text-[#C49A6C]" />
               </div>
             </motion.div>
           ))}
@@ -415,8 +415,8 @@ export default function Home() {
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
             <div>
               <div className="flex items-center gap-2 mb-2">
-                <span className="w-7 h-[3px] bg-[#F4B323] rounded-full inline-block" />
-                <span className="text-[11px] font-extrabold tracking-[0.2em] text-[#F4B323] uppercase">
+                <span className="w-7 h-[3px] bg-[#C49A6C] rounded-full inline-block" />
+                <span className="text-[11px] font-extrabold tracking-[0.2em] text-[#C49A6C] uppercase">
                   Sectors We Serve
                 </span>
               </div>
@@ -424,7 +424,7 @@ export default function Home() {
                 Tailored Advisory for Every Industry
               </h2>
             </div>
-            <Link to="/industries" className="text-xs font-bold text-[#F4B323] hover:underline flex items-center gap-1.5">
+            <Link to="/industries" className="text-xs font-bold text-[#C49A6C] hover:underline flex items-center gap-1.5">
               View All 5 Industry Sectors <ArrowRight size={14} />
             </Link>
           </div>
@@ -433,9 +433,9 @@ export default function Home() {
             {industries.slice(0, 3).map((ind) => (
               <div
                 key={ind.id}
-                className="bg-white/5 border border-white/10 rounded-2xl p-6 hover:bg-white/10 hover:border-[#F4B323]/50 transition-all duration-200"
+                className="bg-white/5 border border-white/10 rounded-2xl p-6 hover:bg-white/10 hover:border-[#C49A6C]/50 transition-all duration-200"
               >
-                <div className="text-2xl font-black text-[#F4B323] mb-3">
+                <div className="text-2xl font-black text-[#C49A6C] mb-3">
                   {ind.number}
                 </div>
                 <h3 className="text-base font-bold text-white mb-2">
@@ -444,7 +444,7 @@ export default function Home() {
                 <p className="text-xs text-slate-300 leading-relaxed mb-4">
                   {ind.description}
                 </p>
-                <Link to="/industries" className="text-[11px] font-bold text-[#F4B323] hover:underline inline-flex items-center gap-1">
+                <Link to="/industries" className="text-[11px] font-bold text-[#C49A6C] hover:underline inline-flex items-center gap-1">
                   Read Industry Focus <ArrowRight size={12} />
                 </Link>
               </div>
