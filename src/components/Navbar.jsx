@@ -272,19 +272,6 @@ export default function Navbar({ onLogoClick }) {
 
           {/* Right Action Buttons */}
           <div className="hidden lg:flex items-center gap-3">
-            {/* LinkedIn Button (Pill outline) */}
-            <a
-              href="https://www.linkedin.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn-pill-outline text-xs px-4 py-2 flex items-center gap-2"
-              aria-label="Connect on LinkedIn"
-            >
-              <span className="w-4 h-4 rounded-sm bg-[#0A66C2] text-white flex items-center justify-center text-[10px] font-bold">
-                in
-              </span>
-              <span>Connect on LinkedIn</span>
-            </a>
 
             {/* Get in Touch Button (Gold pill) */}
             <Link
@@ -385,17 +372,6 @@ export default function Navbar({ onLogoClick }) {
                 <Link to="/contact" className="btn-gold justify-center w-full py-3">
                   Get in Touch →
                 </Link>
-                <a
-                  href="https://www.linkedin.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="btn-pill-outline justify-center w-full py-3"
-                >
-                  <span className="w-4 h-4 rounded-sm bg-[#0A66C2] text-white flex items-center justify-center text-[10px] font-bold">
-                    in
-                  </span>
-                  Connect on LinkedIn
-                </a>
               </div>
             </motion.div>
           </motion.div>
