@@ -85,7 +85,6 @@ export default function RotatingGlobe() {
         varying vec3 vPos;
 
         void main() {
-          // ── Use actual NASA texture colors — no synthetic recolouring ──
           vec4 dayTex   = texture2D(uMap,   vUv);
           vec4 nightTex = texture2D(uNight, vUv);
 
@@ -95,13 +94,12 @@ export default function RotatingGlobe() {
           // Slight saturation & contrast boost so texture "pops" on screen
           vec3 raw = dayTex.rgb;
           float lum = dot(raw, vec3(0.299, 0.587, 0.114));
-          vec3 surface = mix(vec3(lum), raw, 1.20);   // +20% saturation
-          surface = (surface - 0.5) * 1.04 + 0.5;    // gentle contrast
-          surface = clamp(surface * 1.15, 0.0, 1.0);  // overall brightness lift
+          vec3 surface = mix(vec3(lum), raw, 1.20);
+          surface = (surface - 0.5) * 1.04 + 0.5;
+          surface = clamp(surface * 1.15, 0.0, 1.0);
 
           // Diffuse lighting — soft terminator, bright everywhere
           float NdotL  = dot(normal, uSunDir);
-          // Shadow side floor at 0.45 — Earth always looks lit from space
           float diff   = smoothstep(-0.65, 0.95, NdotL) * 0.55 + 0.45;
           surface *= diff;
 
@@ -115,11 +113,10 @@ export default function RotatingGlobe() {
           float cityI      = max(max(nightTex.r, nightTex.g), nightTex.b);
           float nightBlend = smoothstep(0.15, -0.20, NdotL);
           vec3  cityGlow   = mix(
-            vec3(1.0, 0.76, 0.28) * 3.5,   // amber-gold for dense cities
-            vec3(1.0, 0.95, 0.80) * 2.2,   // white-hot for megacities
+            vec3(1.0, 0.76, 0.28) * 3.5,
+            vec3(1.0, 0.95, 0.80) * 2.2,
             smoothstep(0.42, 0.88, cityI)
           );
-          // Land mask: prevent lights over ocean
           float landMask = 1.0 - isOcean;
           surface += cityGlow * pow(cityI, 1.1) * nightBlend * (0.5 + 0.9 * nightBlend) * landMask;
 
@@ -127,8 +124,8 @@ export default function RotatingGlobe() {
           float fresnel  = pow(1.0 - max(dot(normal, viewDir), 0.0), 3.0);
           float sunAlign = NdotL * 0.5 + 0.5;
           vec3  rimColor = mix(
-            vec3(0.18, 0.60, 1.0) * 1.8,   // cyan shadow limb
-            vec3(0.80, 0.92, 1.0) * 1.2,   // pale sunlit limb
+            vec3(0.18, 0.60, 1.0) * 1.8,
+            vec3(0.80, 0.92, 1.0) * 1.2,
             pow(sunAlign, 2.5)
           );
           surface += rimColor * fresnel * 0.55;
@@ -137,8 +134,6 @@ export default function RotatingGlobe() {
         }
       `,
     });
-
-
 
     textureLoader.load('/earth-blue-marble.jpg', (dayTex) => {
       dayTex.colorSpace = THREE.SRGBColorSpace;
@@ -197,11 +192,11 @@ export default function RotatingGlobe() {
         color,
         transparent: true,
         opacity,
-        depthTest:   false,   // ← always draw over everything — complete orbit
+        depthTest:   false,
         depthWrite:  false,
       });
       const line = new THREE.LineLoop(geo, mat);
-      line.renderOrder = 999;  // draw after globe
+      line.renderOrder = 999;
       line.rotation.x = tiltX;
       line.rotation.y = tiltY;
       return line;
@@ -211,63 +206,165 @@ export default function RotatingGlobe() {
     orbitsGroup.renderOrder = 999;
     rootGroup.add(orbitsGroup);
 
-    // ── 3 Orbital Paths — complete ellipses, always fully visible ──
-    // Orbit 1: Equatorial-ish, mid-tilt — bright light blue
-    const orbit1 = createOrbit(1.95, 1.95, -0.40, 0.58, 0x38BDF8, 0.90);
-    orbitsGroup.add(orbit1);
+    // ── Multi-Colored Security & Intelligence Orbital Lines ──────
+    // 1. Blue Lines (Electric cyan, royal blue, sky blue)
+    const orbitBlue1 = createOrbit(1.95, 1.95, -0.40, 0.58, 0x38BDF8, 0.90);
+    orbitsGroup.add(orbitBlue1);
 
-    // Orbit 2: Steep polar inclination — deeper blue
-    const orbit2 = createOrbit(2.08, 2.08,  1.12, 0.26, 0x1676C5, 0.80);
-    orbitsGroup.add(orbit2);
+    const orbitBlue2 = createOrbit(2.08, 2.08,  1.12, 0.26, 0x1676C5, 0.85);
+    orbitsGroup.add(orbitBlue2);
 
-    // Orbit 3: Outer ring, nearly polar — pale cyan
-    const orbit3 = createOrbit(2.22, 2.22, -0.82, -0.68, 0x7DD3FC, 0.65);
-    orbitsGroup.add(orbit3);
+    const orbitBlue3 = createOrbit(2.26, 2.26, -0.82, -0.68, 0x7DD3FC, 0.65);
+    orbitsGroup.add(orbitBlue3);
 
-    // ── Glowing Orbital Node Beads ─────────────────────────────────
+    // 2. Gold Lines (Signature champagne gold & warm amber gold)
+    const orbitGold1 = createOrbit(2.00, 2.00, 0.35, -0.48, 0xF4B323, 0.95);
+    orbitsGroup.add(orbitGold1);
+
+    const orbitGold2 = createOrbit(2.18, 2.18, -0.72, 0.82, 0xEAB308, 0.88);
+    orbitsGroup.add(orbitGold2);
+
+    // 3. Black Lines (Midnight corporate black & slate technical boundary)
+    const orbitBlack1 = createOrbit(2.04, 2.04, 0.82, -0.52, 0x071A3D, 0.92);
+    orbitsGroup.add(orbitBlack1);
+
+    const orbitBlack2 = createOrbit(2.22, 2.22, -0.22, 1.15, 0x0F172A, 0.88);
+    orbitsGroup.add(orbitBlack2);
+
+    // ── Glowing Orbital Node Beads (Blue, Black, Gold) ─────────────
     function createNode(color, size = 0.014) {
       const g = new THREE.Group();
-      // Core bright dot
       g.add(new THREE.Mesh(
         new THREE.SphereGeometry(size, 16, 16),
         new THREE.MeshBasicMaterial({ color, blending: THREE.AdditiveBlending })
       ));
-      // Soft halo
       g.add(new THREE.Mesh(
         new THREE.SphereGeometry(size * 2.2, 16, 16),
-        new THREE.MeshBasicMaterial({ color, transparent: true, opacity: 0.22, blending: THREE.AdditiveBlending, depthWrite: false })
+        new THREE.MeshBasicMaterial({ color, transparent: true, opacity: 0.25, blending: THREE.AdditiveBlending, depthWrite: false })
       ));
       return g;
     }
 
     const beads = [
-      // orbit1 nodes
-      { node: createNode(0x38BDF8, 0.014), radius: 1.95, angle: 0.5,  tiltX: -0.40, tiltY: 0.58,  speed: 0.0028 },
-      { node: createNode(0x38BDF8, 0.013), radius: 1.95, angle: 2.4,  tiltX: -0.40, tiltY: 0.58,  speed: 0.0028 },
-      { node: createNode(0x7DD3FC, 0.012), radius: 1.95, angle: 4.5,  tiltX: -0.40, tiltY: 0.58,  speed: 0.0028 },
-      // orbit2 nodes
-      { node: createNode(0x1676C5, 0.014), radius: 2.08, angle: 1.1,  tiltX:  1.12, tiltY: 0.26,  speed: 0.0022 },
-      { node: createNode(0x38BDF8, 0.012), radius: 2.08, angle: 3.6,  tiltX:  1.12, tiltY: 0.26,  speed: 0.0022 },
-      // orbit3 nodes
-      { node: createNode(0x7DD3FC, 0.013), radius: 2.22, angle: 2.0,  tiltX: -0.82, tiltY: -0.68, speed: 0.0018 },
-      { node: createNode(0xBAE6FD, 0.011), radius: 2.22, angle: 5.1,  tiltX: -0.82, tiltY: -0.68, speed: 0.0018 },
+      // Gold nodes
+      { node: createNode(0xF4B323, 0.015), radius: 2.00, angle: 0.6, tiltX: 0.35, tiltY: -0.48, speed: 0.0028 },
+      { node: createNode(0xF4B323, 0.013), radius: 2.00, angle: 3.2, tiltX: 0.35, tiltY: -0.48, speed: 0.0028 },
+      { node: createNode(0xEAB308, 0.014), radius: 2.18, angle: 1.8, tiltX: -0.72, tiltY: 0.82, speed: 0.0024 },
+      // Blue nodes
+      { node: createNode(0x38BDF8, 0.014), radius: 1.95, angle: 0.5, tiltX: -0.40, tiltY: 0.58, speed: 0.0028 },
+      { node: createNode(0x38BDF8, 0.013), radius: 1.95, angle: 2.4, tiltX: -0.40, tiltY: 0.58, speed: 0.0028 },
+      { node: createNode(0x1676C5, 0.015), radius: 2.08, angle: 1.1, tiltX:  1.12, tiltY: 0.26, speed: 0.0022 },
+      { node: createNode(0x7DD3FC, 0.012), radius: 2.26, angle: 4.5, tiltX: -0.82, tiltY: -0.68, speed: 0.0018 },
+      // Black / Midnight corporate nodes
+      { node: createNode(0x071A3D, 0.016), radius: 2.04, angle: 0.9, tiltX: 0.82, tiltY: -0.52, speed: 0.0022 },
+      { node: createNode(0x0F172A, 0.015), radius: 2.22, angle: 5.1, tiltX: -0.22, tiltY: 1.15, speed: 0.0019 },
     ];
     beads.forEach(({ node }) => rootGroup.add(node));
 
-    // ── Soft Specular Lens Burst at sun-side limb ──────────────────
-    const flareGroup = new THREE.Group();
-    flareGroup.position.set(-sphereRadius * 0.68, sphereRadius * 0.70, sphereRadius * 0.45);
-    [
-      { size: 0.08, color: 0xFFFFFF, opacity: 0.90 },
-      { size: 0.20, color: 0xBAE6FD, opacity: 0.38 },
-      { size: 0.36, color: 0x38BDF8, opacity: 0.16 },
-    ].forEach(({ size, color, opacity }) => {
-      flareGroup.add(new THREE.Mesh(
-        new THREE.SphereGeometry(size, 16, 16),
-        new THREE.MeshBasicMaterial({ color, transparent: true, opacity, blending: THREE.AdditiveBlending })
-      ));
+    // ── 3D Digital Security Padlock on the Globe ───────────────────
+    const lockGroup = new THREE.Group();
+    // Positioned prominently hovering on the front-right limb of the Earth
+    lockGroup.position.set(0.60, 0.42, 1.48);
+    lockGroup.rotation.y = 0.28;
+    lockGroup.rotation.x = -0.12;
+
+    // 1. Shackle (Metallic gold U-hoop)
+    const shackleMat = new THREE.MeshStandardMaterial({
+      color: 0xF4B323,
+      metalness: 0.90,
+      roughness: 0.20,
     });
-    rootGroup.add(flareGroup);
+    const shackleGeo = new THREE.TorusGeometry(0.065, 0.014, 16, 32, Math.PI);
+    const shackle = new THREE.Mesh(shackleGeo, shackleMat);
+    shackle.position.set(0, 0.075, 0);
+    lockGroup.add(shackle);
+
+    const legGeo = new THREE.CylinderGeometry(0.014, 0.014, 0.045, 16);
+    const leftLeg = new THREE.Mesh(legGeo, shackleMat);
+    leftLeg.position.set(-0.065, 0.052, 0);
+    lockGroup.add(leftLeg);
+    const rightLeg = new THREE.Mesh(legGeo, shackleMat);
+    rightLeg.position.set(0.065, 0.052, 0);
+    lockGroup.add(rightLeg);
+
+    // 2. Lock Body (Deep navy core with polished gold beveled border)
+    const bodyMat = new THREE.MeshStandardMaterial({
+      color: 0x071A3D,
+      metalness: 0.70,
+      roughness: 0.30,
+    });
+    const bodyGeo = new THREE.BoxGeometry(0.20, 0.16, 0.055);
+    const body = new THREE.Mesh(bodyGeo, bodyMat);
+    body.position.set(0, -0.025, 0);
+    lockGroup.add(body);
+
+    const goldRimGeo = new THREE.BoxGeometry(0.18, 0.14, 0.060);
+    const goldRimMat = new THREE.MeshStandardMaterial({
+      color: 0xF4B323,
+      metalness: 0.85,
+      roughness: 0.25,
+    });
+    const goldRim = new THREE.Mesh(goldRimGeo, goldRimMat);
+    goldRim.position.set(0, -0.025, 0);
+    lockGroup.add(goldRim);
+
+    const innerFaceGeo = new THREE.BoxGeometry(0.15, 0.11, 0.064);
+    const innerFaceMat = new THREE.MeshBasicMaterial({ color: 0x0B192C });
+    const innerFace = new THREE.Mesh(innerFaceGeo, innerFaceMat);
+    innerFace.position.set(0, -0.025, 0);
+    lockGroup.add(innerFace);
+
+    // 3. Glowing Keyhole (Luminous Cyan & Gold)
+    const keyholeMat = new THREE.MeshBasicMaterial({
+      color: 0x38BDF8,
+      transparent: true,
+      opacity: 0.95,
+      depthTest: false,
+    });
+    const keyCircle = new THREE.Mesh(new THREE.CircleGeometry(0.018, 16), keyholeMat);
+    keyCircle.position.set(0, -0.015, 0.035);
+    lockGroup.add(keyCircle);
+
+    const keySlot = new THREE.Mesh(new THREE.PlaneGeometry(0.012, 0.030), keyholeMat);
+    keySlot.position.set(0, -0.035, 0.035);
+    lockGroup.add(keySlot);
+
+    // Status LED dot (Protected status green)
+    const statusDot = new THREE.Mesh(
+      new THREE.SphereGeometry(0.010, 16, 16),
+      new THREE.MeshBasicMaterial({ color: 0x10B981, depthTest: false })
+    );
+    statusDot.position.set(0.065, 0.035, 0.035);
+    lockGroup.add(statusDot);
+
+    // 4. Concentric Glowing Security Pulse Rings
+    const innerRadarGeo = new THREE.RingGeometry(0.17, 0.185, 32);
+    const innerRadarMat = new THREE.MeshBasicMaterial({
+      color: 0x38BDF8,
+      transparent: true,
+      opacity: 0.65,
+      side: THREE.DoubleSide,
+      blending: THREE.AdditiveBlending,
+      depthTest: false,
+    });
+    const innerRadar = new THREE.Mesh(innerRadarGeo, innerRadarMat);
+    innerRadar.position.set(0, 0, -0.01);
+    lockGroup.add(innerRadar);
+
+    const outerRadarGeo = new THREE.RingGeometry(0.23, 0.245, 32);
+    const outerRadarMat = new THREE.MeshBasicMaterial({
+      color: 0xF4B323,
+      transparent: true,
+      opacity: 0.45,
+      side: THREE.DoubleSide,
+      blending: THREE.AdditiveBlending,
+      depthTest: false,
+    });
+    const outerRadar = new THREE.Mesh(outerRadarGeo, outerRadarMat);
+    outerRadar.position.set(0, 0, -0.01);
+    lockGroup.add(outerRadar);
+
+    rootGroup.add(lockGroup);
 
     // ── Drag-to-Rotate Interaction ─────────────────────────────────
     let isDragging = false;
@@ -325,20 +422,32 @@ export default function RotatingGlobe() {
       globeGroup.rotation.y = THREE.MathUtils.lerp(globeGroup.rotation.y, targetRotY,       0.10);
       globeGroup.rotation.x = THREE.MathUtils.lerp(globeGroup.rotation.x, targetRotX * 0.35, 0.10);
 
-      // Gentle orbital precession (each ring drifts slowly)
-      orbit1.rotation.z += 0.00080;
-      orbit2.rotation.z -= 0.00065;
-      orbit3.rotation.x += 0.00055;
+      // Subtle floating breathing motion for security lock
+      lockGroup.position.y = 0.42 + Math.sin(time * 1.6) * 0.015;
+
+      // Pulse security radar rings
+      const radarPulse = 1.0 + Math.sin(time * 2.6) * 0.08;
+      innerRadar.scale.set(radarPulse, radarPulse, 1);
+      innerRadarMat.opacity = 0.50 + Math.sin(time * 2.6) * 0.20;
+      outerRadar.scale.set(1.0 + (radarPulse - 1.0) * 1.6, 1.0 + (radarPulse - 1.0) * 1.6, 1);
+      outerRadarMat.opacity = 0.35 + Math.sin(time * 2.6) * 0.15;
+
+      // Gentle orbital precession across all lines (blue, black, gold)
+      orbitBlue1.rotation.z += 0.00075;
+      orbitBlue2.rotation.z -= 0.00060;
+      orbitBlue3.rotation.x += 0.00050;
+      orbitGold1.rotation.z += 0.00080;
+      orbitGold2.rotation.z -= 0.00070;
+      orbitBlack1.rotation.y += 0.00065;
+      orbitBlack2.rotation.x -= 0.00055;
 
       // Animate node beads along their orbital ellipses
       beads.forEach((b) => {
         b.angle += b.speed;
-        // Correctly project the bead onto the tilted orbit plane
         const sinX = Math.sin(b.tiltX), cosX = Math.cos(b.tiltX);
         const sinY = Math.sin(b.tiltY), cosY = Math.cos(b.tiltY);
         const lx = b.radius * Math.cos(b.angle);
         const ly = b.radius * Math.sin(b.angle);
-        // Apply rotation: first tiltX, then tiltY
         const x  =  cosY * lx - sinY * sinX * ly;
         const y  =             cosX * ly;
         const z  =  sinY * lx + cosY * sinX * ly;
