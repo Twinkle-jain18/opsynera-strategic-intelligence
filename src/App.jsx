@@ -74,8 +74,9 @@ export default function App() {
 
       {/* Main Site */}
       {splashDone && (
-        <div className="flex flex-col min-h-screen">
+        <div className="flex flex-col min-h-screen relative">
           <Navbar onLogoClick={handleLogoSecretClick} />
+
           <div className="flex-1">
             <AnimatedRoutes />
           </div>

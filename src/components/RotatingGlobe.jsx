@@ -24,7 +24,7 @@ export default function RotatingGlobe() {
     renderer.setClearColor(0x000000, 0);
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     renderer.toneMapping       = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.60;
+    renderer.toneMappingExposure = 1.85;
     container.appendChild(renderer.domElement);
 
     // ── Root Group: natural axial tilt ─────────────────────────────
@@ -37,16 +37,16 @@ export default function RotatingGlobe() {
     rootGroup.add(globeGroup);
 
     // ── Lighting — bright & balanced for realistic Earth ───────────
-    // Neutral bright ambient: shadow side is never pitch-black
-    scene.add(new THREE.AmbientLight(0xffffff, 2.2));
+    // High-intensity ambient: shadow side is clearly visible and light
+    scene.add(new THREE.AmbientLight(0xffffff, 3.5));
 
     // Primary sun — warm daylight from upper-left
-    const keySun = new THREE.DirectionalLight(0xfff8f0, 3.0);
+    const keySun = new THREE.DirectionalLight(0xfff8f0, 3.8);
     keySun.position.set(-5, 4.5, 5);
     scene.add(keySun);
 
-    // Soft fill from opposite side — lifts the dark hemisphere
-    const fillLight = new THREE.DirectionalLight(0xddeeff, 1.2);
+    // Strong fill from opposite side — eliminates dark hemisphere
+    const fillLight = new THREE.DirectionalLight(0xddeeff, 1.8);
     fillLight.position.set(5, -2, -3);
     scene.add(fillLight);
 
@@ -92,22 +92,31 @@ export default function RotatingGlobe() {
           vec3 normal  = normalize(vNormal);
           vec3 viewDir = normalize(-vPos);
 
-          // Slight saturation & contrast boost so texture "pops" on screen
+          // Brightness & saturation — lighter, more vivid look
           vec3 raw = dayTex.rgb;
           float lum = dot(raw, vec3(0.299, 0.587, 0.114));
-          vec3 surface = mix(vec3(lum), raw, 1.20);
-          surface = (surface - 0.5) * 1.04 + 0.5;
-          surface = clamp(surface * 1.15, 0.0, 1.0);
+          vec3 surface = mix(vec3(lum), raw, 1.18);
+          surface = (surface - 0.5) * 1.00 + 0.5;
+          surface = clamp(surface * 1.50, 0.0, 1.0);
 
-          // Diffuse lighting — soft terminator, bright everywhere
+          // ── Lighten the dark navy ocean — the main fix ────────────
+          // Detect ocean by blue dominance over red channel
+          float isOcean = smoothstep(0.0, 0.25, dayTex.b - dayTex.r * 0.80);
+          // Blend ocean pixels toward a lighter sky-blue
+          vec3 lightOcean = vec3(0.38, 0.62, 0.90);  // mid bright blue
+          surface = mix(surface, mix(surface, lightOcean, 0.35), isOcean);
+
+          // Global lift — mix everything slightly toward white for a bright globe
+          surface = mix(surface, vec3(1.0), 0.12);
+
+          // Diffuse — very soft terminator, 65% floor on dark side
           float NdotL  = dot(normal, uSunDir);
-          float diff   = smoothstep(-0.65, 0.95, NdotL) * 0.55 + 0.45;
+          float diff   = smoothstep(-0.90, 1.00, NdotL) * 0.35 + 0.65;
           surface *= diff;
 
-          // Ocean specular gloss — detects ocean by blue dominance
-          float isOcean = smoothstep(0.0, 0.18, dayTex.b - dayTex.r * 0.75);
+          // Ocean specular gloss
           vec3  halfDir = normalize(uSunDir + viewDir);
-          float spec    = pow(max(dot(normal, halfDir), 0.0), 55.0) * isOcean * 0.65;
+          float spec    = pow(max(dot(normal, halfDir), 0.0), 55.0) * isOcean * 0.55;
           surface += vec3(0.70, 0.88, 1.0) * spec;
 
           // City lights on the night side (warm gold, as in NASA Black Marble)
