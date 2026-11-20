@@ -1,13 +1,16 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Eye, EyeOff, Shield, X, AlertCircle, Lock, Mail, ArrowLeft } from 'lucide-react';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '../firebase';
 
-const ADMIN_CREDENTIALS = { username: 'admin', password: 'Ops@Admin#2025' };
-const RECOVERY_EMAIL    = 'opsynerastatintadvisory@gmail.com';
+// Recovery email shown in the forgot-password flow.
+// No credentials are hardcoded — authentication is handled by Firebase.
+const RECOVERY_EMAIL = 'opsynerastatintadvisory@gmail.com';
 
 export default function AdminLogin({ onSuccess, onClose }) {
   const [view,     setView]     = useState('login');   // 'login' | 'forgot' | 'sent'
-  const [username, setUsername] = useState('');
+  const [email,    setEmail]    = useState('');
   const [password, setPassword] = useState('');
   const [showPwd,  setShowPwd]  = useState(false);
   const [error,    setError]    = useState('');
@@ -19,6 +22,7 @@ export default function AdminLogin({ onSuccess, onClose }) {
 
   useEffect(() => { inputRef.current?.focus(); }, [view]);
 
+  // Countdown timer when access is locked after too many failed attempts
   useEffect(() => {
     if (!locked) return;
     const id = setInterval(() => {
@@ -30,25 +34,48 @@ export default function AdminLogin({ onSuccess, onClose }) {
     return () => clearInterval(id);
   }, [locked]);
 
+  // Translate Firebase Auth error codes into user-friendly messages
+  const getFirebaseErrorMessage = (code) => {
+    switch (code) {
+      case 'auth/invalid-credential':
+      case 'auth/wrong-password':
+      case 'auth/user-not-found':
+        return 'Invalid credentials. Please check your email and password.';
+      case 'auth/invalid-email':
+        return 'Please enter a valid email address.';
+      case 'auth/too-many-requests':
+        return 'Too many failed attempts. Firebase has temporarily blocked this account. Try again later.';
+      case 'auth/network-request-failed':
+        return 'Network error. Please check your internet connection.';
+      default:
+        return 'Authentication failed. Please try again.';
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (locked) return;
     setError('');
     setLoading(true);
-    await new Promise((r) => setTimeout(r, 900));
-    setLoading(false);
 
-    if (username.trim() === ADMIN_CREDENTIALS.username && password === ADMIN_CREDENTIALS.password) {
+    try {
+      // Firebase verifies credentials server-side — no local comparison
+      await signInWithEmailAndPassword(auth, email.trim(), password);
+      // onAuthStateChanged in App.jsx handles the UID check and sets adminLoggedIn
+      setLoading(false);
       onSuccess();
-    } else {
+    } catch (err) {
+      setLoading(false);
       const next = attempts + 1;
       setAttempts(next);
+
       if (next >= 3) {
         setLocked(true);
         setLockTimer(30);
         setError('Too many failed attempts. Access locked for 30 seconds.');
       } else {
-        setError(`Invalid credentials. ${3 - next} attempt${3 - next !== 1 ? 's' : ''} remaining.`);
+        const msg = getFirebaseErrorMessage(err.code);
+        setError(`${msg} ${3 - next} attempt${3 - next !== 1 ? 's' : ''} remaining.`);
       }
     }
   };
@@ -58,7 +85,7 @@ export default function AdminLogin({ onSuccess, onClose }) {
     setLoading(true);
     await new Promise((r) => setTimeout(r, 1200));
     setLoading(false);
-    // Open mailto as fallback for no-backend environment
+    // Opens the admin's email client as a fallback recovery method
     window.open(
       `mailto:${RECOVERY_EMAIL}?subject=Admin%20Password%20Recovery%20Request&body=Please%20help%20me%20recover%20my%20Opsynera%20admin%20panel%20password.`,
       '_blank'
@@ -79,7 +106,7 @@ export default function AdminLogin({ onSuccess, onClose }) {
         transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
         className="w-full max-w-md bg-white rounded-2xl shadow-2xl overflow-hidden"
       >
-        {/* Header */}
+        {/* Header — unchanged */}
         <div className="bg-[#071A3D] px-7 py-6 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-[#C49A6C]/20 border border-[#C49A6C]/30 flex items-center justify-center">
@@ -131,22 +158,22 @@ export default function AdminLogin({ onSuccess, onClose }) {
                 )}
               </AnimatePresence>
 
-              {/* Username */}
+              {/* Email — replaces username field */}
               <div>
-                <label className="block text-xs font-bold text-[#071A3D] tracking-wide uppercase mb-1.5">Username</label>
+                <label className="block text-xs font-bold text-[#071A3D] tracking-wide uppercase mb-1.5">Admin Email</label>
                 <input
                   ref={inputRef}
-                  type="text"
-                  value={username}
-                  onChange={(e) => { setUsername(e.target.value); setError(''); }}
-                  autoComplete="username"
+                  type="email"
+                  value={email}
+                  onChange={(e) => { setEmail(e.target.value); setError(''); }}
+                  autoComplete="email"
                   disabled={locked || loading}
-                  placeholder="Enter username"
+                  placeholder="Enter admin email"
                   className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 text-[#071A3D] text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#071A3D]/20 focus:border-[#071A3D] transition-all disabled:opacity-50"
                 />
               </div>
 
-              {/* Password */}
+              {/* Password — identical styling */}
               <div>
                 <div className="flex items-center justify-between mb-1.5">
                   <label className="block text-xs font-bold text-[#071A3D] tracking-wide uppercase">Password</label>
@@ -181,7 +208,7 @@ export default function AdminLogin({ onSuccess, onClose }) {
               {/* Submit */}
               <button
                 type="submit"
-                disabled={locked || loading || !username || !password}
+                disabled={locked || loading || !email || !password}
                 className="w-full py-3.5 rounded-xl bg-[#071A3D] text-white font-bold text-sm tracking-wide hover:bg-[#0B2450] disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 flex items-center justify-center gap-2"
               >
                 {loading ? (
@@ -194,7 +221,7 @@ export default function AdminLogin({ onSuccess, onClose }) {
             </motion.form>
           )}
 
-          {/* ── FORGOT PASSWORD VIEW ── */}
+          {/* ── FORGOT PASSWORD VIEW — unchanged layout ── */}
           {view === 'forgot' && (
             <motion.form
               key="forgot"
@@ -233,7 +260,7 @@ export default function AdminLogin({ onSuccess, onClose }) {
             </motion.form>
           )}
 
-          {/* ── EMAIL SENT VIEW ── */}
+          {/* ── EMAIL SENT VIEW — unchanged ── */}
           {view === 'sent' && (
             <motion.div
               key="sent"

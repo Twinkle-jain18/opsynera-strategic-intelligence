@@ -7,6 +7,8 @@ import {
   Plus, Edit2, Trash2, Phone, MessageCircle, Save,
   Building2, Layers, Briefcase, Landmark, Monitor,
 } from 'lucide-react';
+import { signOut } from 'firebase/auth';
+import { auth } from '../firebase';
 import { useSiteData } from '../context/SiteDataContext';
 import { useToast } from '../context/ToastContext';
 import { services as defaultServices } from '../data/services';

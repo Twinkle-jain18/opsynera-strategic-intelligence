@@ -1,0 +1,344 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+
+    // ════════════════════════════════════════════════════════════════════
+    // HELPER — isAdmin()
+    //
+    // Returns true only when:
+    //   (a) a Firebase user is currently signed in, AND
+    //   (b) their UID matches the one authorised admin account exactly.
+    //
+    // Any other Firebase account returns false regardless of email.
+    // Unchanged across all versions.
+    // ════════════════════════════════════════════════════════════════════
+
+    function isAdmin() {
+      return request.auth != null
+          && request.auth.uid == 'A0IdyBXXwjODn1noyaQjRiGIUQg2';
+    }
+
+
+    // ════════════════════════════════════════════════════════════════════
+    // HELPER — isValidInquiry()
+    //
+    // Runs for every CREATE (contact form submission).
+    // All checks happen on Google's servers before data is saved.
+    //
+    // What the form actually sends (from InquiryForm.jsx initialForm):
+    //   - 8 form fields:  fullName, company, email, phone,
+    //                     industry, service, description, contactMethod
+    //   - 1 UI-only flag: privacyAck  ← stripped by Phase 4 before Firestore write
+    //
+    // What Phase 4 app code adds before the Firestore write:
+    //   - status      = 'New'              (always added in code)
+    //   - submittedAt = serverTimestamp()  (always added in code)
+    //
+    // privacyAck is intentionally excluded from hasOnly().
+    // It is a UI-only acknowledgment that must be stripped before writing.
+    // If it reaches Firestore, the write is rejected here — by design.
+    // ════════════════════════════════════════════════════════════════════
+
+    function isValidInquiry() {
+      let d = request.resource.data;
+      return
+
+        // ── STRUCTURE ─────────────────────────────────────────────────
+
+        // All 8 required form fields must be present.
+        d.keys().hasAll([
+          'fullName', 'company', 'email', 'phone',
+          'industry', 'service', 'description', 'contactMethod'
+        ])
+
+        // Only these 10 keys are permitted in a new inquiry document.
+        // Any other key — including privacyAck, isAdmin, uid, role —
+        // causes the entire write to be rejected.
+        && d.keys().hasOnly([
+          'fullName', 'company', 'email', 'phone',
+          'industry', 'service', 'description', 'contactMethod',
+          'status',       // added by Phase 4 app code, optional here
+          'submittedAt'   // added by Phase 4 app code, optional here
+        ])
+
+        // If status is present, it must be exactly 'New'.
+        // The public cannot pre-assign 'Reviewed', 'Closed', or any other value.
+        && (!d.keys().hasAny(['status']) || d.status == 'New')
+
+        // If submittedAt is present, it must equal request.time exactly.
+        // Phase-4 MUST use serverTimestamp() — not new Date().toISOString() —
+        // because only serverTimestamp() produces a value that equals request.time
+        // at the moment the Firestore server processes the write.
+        // Any client-supplied date string or crafted timestamp will NOT match
+        // request.time and will cause the write to be rejected.
+        && (!d.keys().hasAny(['submittedAt']) || d.submittedAt == request.time)
+
+
+        // ── FIELD VALIDATIONS ─────────────────────────────────────────
+
+        // fullName — string, 2–100 chars, at least one non-whitespace char
+        && d.fullName      is string
+        && d.fullName.size()      >= 2
+        && d.fullName.size()      <= 100
+        && d.fullName.matches('.*\\S.*')
+
+        // company — string, 1–150 chars, not whitespace-only
+        && d.company       is string
+        && d.company.size()       >= 1
+        && d.company.size()       <= 150
+        && d.company.matches('.*\\S.*')
+
+        // email — anchored regex: no spaces, one @, at least one dot after @
+        && d.email         is string
+        && d.email.size()         <= 200
+        && d.email.matches('^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$')
+
+        // phone — string, 6–30 chars, not whitespace-only
+        // Accepts: +91 98765 43210, +1-555-000-0000, 0400 123 456, etc.
+        && d.phone         is string
+        && d.phone.size()         >= 6
+        && d.phone.size()         <= 30
+        && d.phone.matches('.*\\S.*')
+
+        // industry — string, 1–100 chars, not whitespace-only
+        && d.industry      is string
+        && d.industry.size()      >= 1
+        && d.industry.size()      <= 100
+        && d.industry.matches('.*\\S.*')
+
+        // service — string, 1–150 chars, not whitespace-only
+        && d.service       is string
+        && d.service.size()       >= 1
+        && d.service.size()       <= 150
+        && d.service.matches('.*\\S.*')
+
+        // description — string, 10–2000 chars, not whitespace-only
+        // Minimum 10 chars ensures the message is substantive.
+        && d.description   is string
+        && d.description.size()   >= 10
+        && d.description.size()   <= 2000
+        && d.description.matches('.*\\S.*')
+
+        // contactMethod — string, 1–30 chars, not whitespace-only
+        && d.contactMethod is string
+        && d.contactMethod.size() >= 1
+        && d.contactMethod.size() <= 30
+        && d.contactMethod.matches('.*\\S.*');
+    }
+
+
+    // ════════════════════════════════════════════════════════════════════
+    // HELPER — isValidAdminUpdate()
+    //
+    // Runs when the admin performs an UPDATE on an existing inquiry.
+    //
+    // Two Firestore variables available during update evaluation:
+    //   resource.data         → the document as it currently exists (prev)
+    //   request.resource.data → the merged document after the update  (next)
+    //
+    //   Because updateDoc() merges, fields not included in the write call
+    //   retain their original values in next. This means:
+    //   • If prev has fullName = 'Alice' and admin omits fullName from the
+    //     update, next.get('fullName', null) is still 'Alice' — passes.
+    //   • If a field is MISSING from prev, direct access (prev.fullName)
+    //     throws a runtime error in Firestore Security Rules, causing an
+    //     implicit permission-denied. To avoid this, all 8 original field
+    //     comparisons use map.get('field', null) so a missing field safely
+    //     returns null instead of erroring.
+    //
+    // Admin may ONLY change:
+    //   - status      (workflow state — 4 approved values; see two-branch rule)
+    //   - adminNotes  (internal notes — can be added, changed, cleared, deleted)
+    //
+    // Admin may NOT change or remove:
+    //   - Any of the 8 original inquiry fields (even if some are null/missing)
+    //   - submittedAt
+    //   - An existing status field (it can only be changed, never deleted)
+    // ════════════════════════════════════════════════════════════════════
+
+    function isValidAdminUpdate() {
+      let prev = resource.data;          // current saved document
+      let next = request.resource.data;  // merged document after update
+
+      return
+
+        // ── IMMUTABLE FIELDS — dual-check for presence AND value ─────────
+        // A value-only comparison (next.get() == prev.get()) has a gap:
+        // if a field is absent from prev and an admin writes it with an
+        // explicit null value, both sides return null and the check
+        // incorrectly passes. Two independent conditions are required:
+        //
+        //   Check 1 — field presence must be identical:
+        //     prev.keys().hasAny(['F']) == next.keys().hasAny(['F'])
+        //       absent in both:               false == false → passes
+        //       present in both:              true  == true  → passes
+        //       admin adds null to absent field: false == true  → REJECTED
+        //       admin deletes existing field:   true  == false → REJECTED
+        //
+        //   Check 2 — if field existed in prev, its value must be unchanged:
+        //     !prev.keys().hasAny(['F']) || next.get('F', null) == prev.get('F', null)
+        //       field absent in prev:        !false → true (short-circuits safely)
+        //       field present, same value:    false || true  → passes
+        //       field present, changed value: false || false → REJECTED
+        //
+        // Both checks together close the null-injection gap and prevent
+        // additions, deletions, and value changes for every original field.
+        prev.keys().hasAny(['fullName']) == next.keys().hasAny(['fullName'])
+        && (!prev.keys().hasAny(['fullName']) || next.get('fullName', null) == prev.get('fullName', null))
+
+        && prev.keys().hasAny(['company']) == next.keys().hasAny(['company'])
+        && (!prev.keys().hasAny(['company']) || next.get('company', null) == prev.get('company', null))
+
+        && prev.keys().hasAny(['email']) == next.keys().hasAny(['email'])
+        && (!prev.keys().hasAny(['email']) || next.get('email', null) == prev.get('email', null))
+
+        && prev.keys().hasAny(['phone']) == next.keys().hasAny(['phone'])
+        && (!prev.keys().hasAny(['phone']) || next.get('phone', null) == prev.get('phone', null))
+
+        && prev.keys().hasAny(['industry']) == next.keys().hasAny(['industry'])
+        && (!prev.keys().hasAny(['industry']) || next.get('industry', null) == prev.get('industry', null))
+
+        && prev.keys().hasAny(['service']) == next.keys().hasAny(['service'])
+        && (!prev.keys().hasAny(['service']) || next.get('service', null) == prev.get('service', null))
+
+        && prev.keys().hasAny(['description']) == next.keys().hasAny(['description'])
+        && (!prev.keys().hasAny(['description']) || next.get('description', null) == prev.get('description', null))
+
+        && prev.keys().hasAny(['contactMethod']) == next.keys().hasAny(['contactMethod'])
+        && (!prev.keys().hasAny(['contactMethod']) || next.get('contactMethod', null) == prev.get('contactMethod', null))
+
+        // submittedAt — two strict branches, no middle ground:
+        //   Branch A: if submittedAt existed in the saved document,
+        //             it must still exist in the updated document and be identical.
+        //   Branch B: if submittedAt did NOT exist in the saved document,
+        //             the admin is NOT allowed to add it via an update.
+        // This prevents both tampering with an existing timestamp and
+        // retroactively stamping old documents that were created before Phase-4.
+        && (
+          (prev.keys().hasAny(['submittedAt'])
+            && next.keys().hasAny(['submittedAt'])
+            && next.submittedAt == prev.submittedAt)
+          || (!prev.keys().hasAny(['submittedAt'])
+            && !next.keys().hasAny(['submittedAt']))
+        )
+
+
+        // ── PERMITTED KEYS IN THE UPDATED DOCUMENT ───────────────────
+        // After the update, the document may only contain these 11 keys.
+        // This prevents the admin from injecting unexpected new fields.
+        && next.keys().hasOnly([
+          'fullName', 'company', 'email', 'phone',
+          'industry', 'service', 'description', 'contactMethod',
+          'status',       // may or may not be present (see explanation above)
+          'submittedAt',  // present only if original doc had it; immutable
+          'adminNotes'    // optional internal notes field
+        ])
+
+
+        // ── status VALIDATION (two-branch rule) ──────────────────────
+        //
+        // Branch A — original inquiry ALREADY has a status:
+        //   The admin MUST keep status in the document (cannot delete it).
+        //   The value may be changed but only to one of the four approved
+        //   workflow values: New | In Review | Responded | Closed.
+        //
+        // Branch B — original inquiry has NO status (legacy document created
+        //   before Phase-4 was deployed):
+        //   The admin may optionally ADD one of the four approved values,
+        //   or leave status absent entirely — both are accepted.
+        //
+        // In all cases, any value outside the approved list is rejected.
+        && (
+          // Branch A — status existed in the saved document
+          (prev.keys().hasAny(['status'])
+            && next.keys().hasAny(['status'])
+            && next.status is string
+            && next.status in ['New', 'In Review', 'Responded', 'Closed'])
+
+          // Branch B — no status in the saved document
+          || (!prev.keys().hasAny(['status'])
+            && (
+              !next.keys().hasAny(['status'])
+              || (next.status is string
+                  && next.status in ['New', 'In Review', 'Responded', 'Closed'])
+            ))
+        )
+
+
+        // ── adminNotes VALIDATION (conditional) ──────────────────────
+        // adminNotes is fully optional:
+        //   - absent        → fine (admin did not use this field)
+        //   - empty string  → fine (admin cleared the notes)
+        //   - non-empty str → must be ≤ 1000 characters
+        //
+        // To REMOVE adminNotes entirely, the admin code uses deleteField().
+        // After deleteField(), the key is absent from next — the first
+        // condition below catches this and allows the update.
+        && (
+          !next.keys().hasAny(['adminNotes'])
+          || (next.adminNotes is string && next.adminNotes.size() <= 1000)
+        );
+    }
+
+
+    // ════════════════════════════════════════════════════════════════════
+    // INQUIRIES COLLECTION
+    //
+    // create → public, validated by isValidInquiry()
+    // read   → admin only
+    // update → admin only, further validated by isValidAdminUpdate()
+    //          (original fields locked; only status + adminNotes writable)
+    // delete → admin only
+    //
+    // Public users cannot read, update, or delete any inquiry.
+    // ════════════════════════════════════════════════════════════════════
+
+    match /inquiries/{inquiryId} {
+      allow create: if isValidInquiry();
+      allow read:   if isAdmin();
+      allow update: if isAdmin() && isValidAdminUpdate();
+      allow delete: if isAdmin();
+    }
+
+
+    // ════════════════════════════════════════════════════════════════════
+    // SERVICES COLLECTION
+    //
+    // read   → public  (powers Services page and Home page service cards)
+    // write  → admin only
+    // ════════════════════════════════════════════════════════════════════
+
+    match /services/{serviceId} {
+      allow read:                   if true;
+      allow create, update, delete: if isAdmin();
+    }
+
+
+    // ════════════════════════════════════════════════════════════════════
+    // INDUSTRIES COLLECTION
+    //
+    // read   → public  (powers Industries page and Home page)
+    // write  → admin only
+    // ════════════════════════════════════════════════════════════════════
+
+    match /industries/{industryId} {
+      allow read:                   if true;
+      allow create, update, delete: if isAdmin();
+    }
+
+
+    // ════════════════════════════════════════════════════════════════════
+    // DEFAULT DENY
+    //
+    // Every path not matched above is blocked for all users.
+    // This is the safety net for any future collections or typos.
+    // ════════════════════════════════════════════════════════════════════
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+
+  }
+}
