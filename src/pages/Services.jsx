@@ -5,6 +5,7 @@ import PageHero from '../components/PageHero';
 import EngagementTimeline from '../components/EngagementTimeline';
 import CTASection from '../components/CTASection';
 import { useSiteData } from '../context/SiteDataContext';
+import { useHashScrollAndHighlight } from '../hooks/useHashScrollAndHighlight';
 
 const serviceIcons = {
   'strategic-risk-advisory': ShieldCheck,
@@ -17,6 +18,7 @@ const serviceIcons = {
 
 export default function Services() {
   const { services } = useSiteData();
+  const highlightedId = useHashScrollAndHighlight();
   return (
     <main className="bg-white">
       <PageHero
@@ -32,6 +34,7 @@ export default function Services() {
           {services.map((service, i) => {
             const Icon = serviceIcons[service.id] || ShieldCheck;
             const isEven = i % 2 === 0;
+            const isHighlighted = highlightedId === service.slug || highlightedId === service.id;
 
             return (
               <motion.article
@@ -41,7 +44,25 @@ export default function Services() {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5 }}
                 viewport={{ once: true }}
-                className="scroll-mt-28"
+                animate={
+                  isHighlighted
+                    ? {
+                        scale: [1, 1.018, 1.008, 1.018, 1],
+                        boxShadow: [
+                          '0 0 0px 0px rgba(196,154,108,0)',
+                          '0 0 50px 10px rgba(196,154,108,0.50), 0 0 0 3px #C49A6C',
+                          '0 0 30px 6px rgba(196,154,108,0.30), 0 0 0 2px #C49A6C',
+                          '0 0 50px 10px rgba(196,154,108,0.50), 0 0 0 3px #C49A6C',
+                          '0 0 0px 0px rgba(196,154,108,0)',
+                        ],
+                      }
+                    : {}
+                }
+                className={`scroll-mt-28 relative rounded-3xl transition-all duration-700 p-6 sm:p-9 -m-6 sm:-m-9 ${
+                  isHighlighted
+                    ? 'bg-gradient-to-r from-[#C49A6C]/[0.09] via-[#071A3D]/[0.03] to-[#C49A6C]/[0.09] ring-2 ring-[#C49A6C] shadow-[0_0_50px_rgba(196,154,108,0.40)]'
+                    : ''
+                }`}
               >
                 <div className={`grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 items-center ${
                   isEven ? '' : 'lg:flex-row-reverse'
@@ -51,13 +72,24 @@ export default function Services() {
                   <div className={`lg:col-span-7 ${isEven ? 'order-1' : 'order-1 lg:order-2'}`}>
                     
                     {/* Header badge */}
-                    <div className="flex items-center gap-2 mb-3">
+                    <div className="flex flex-wrap items-center gap-2.5 mb-3">
                       <div className="w-8 h-8 rounded-lg bg-[#071A3D] flex items-center justify-center flex-shrink-0">
                         <Icon size={16} className="text-[#C49A6C]" />
                       </div>
                       <span className="text-xs font-black tracking-widest text-[#C49A6C] uppercase">
                         Service {service.number}
                       </span>
+
+                      {isHighlighted && (
+                        <motion.span
+                          initial={{ opacity: 0, scale: 0.85 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-[#071A3D] text-[#C49A6C] text-[10px] font-extrabold tracking-wider uppercase border border-[#C49A6C]/60 shadow-sm ml-auto"
+                        >
+                          <span className="w-1.5 h-1.5 rounded-full bg-[#C49A6C] animate-ping inline-block" />
+                          Selected Service
+                        </motion.span>
+                      )}
                     </div>
 
                     <h2 className="text-2xl sm:text-3xl font-extrabold text-[#071A3D] mb-4 tracking-tight">
@@ -114,7 +146,9 @@ export default function Services() {
 
                   {/* Visual Card / Side Showcase (5 cols) */}
                   <div className={`lg:col-span-5 ${isEven ? 'order-2' : 'order-2 lg:order-1'}`}>
-                    <div className="bg-[#071A3D] rounded-3xl p-8 sm:p-10 text-white relative overflow-hidden shadow-lg border-t-2 border-[#C49A6C]">
+                    <div className={`bg-[#071A3D] rounded-3xl p-8 sm:p-10 text-white relative overflow-hidden transition-all duration-500 ${
+                      isHighlighted ? 'ring-2 ring-[#C49A6C] shadow-[0_0_35px_rgba(196,154,108,0.45)] border-t-2 border-[#C49A6C]' : 'shadow-lg border-t-2 border-[#C49A6C]'
+                    }`}>
                       <div className="absolute inset-0 dot-matrix-dark opacity-25 pointer-events-none" />
 
                       <div className="relative z-10 flex flex-col justify-between min-h-[260px]">

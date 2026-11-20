@@ -4,6 +4,7 @@ import { Building2, Landmark, Monitor, Layers, Briefcase, ShieldCheck } from 'lu
 import PageHero from '../components/PageHero';
 import CTASection from '../components/CTASection';
 import { useSiteData } from '../context/SiteDataContext';
+import { useHashScrollAndHighlight } from '../hooks/useHashScrollAndHighlight';
 
 const iconMap = {
   Building2, Landmark, Monitor, Layers, Briefcase,
@@ -11,6 +12,7 @@ const iconMap = {
 
 export default function Industries() {
   const { industries } = useSiteData();
+  const highlightedId = useHashScrollAndHighlight();
   return (
     <main className="bg-white">
       <PageHero
@@ -61,15 +63,35 @@ export default function Industries() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {industries.map((industry, i) => {
               const Icon = iconMap[industry.icon] || Building2;
+              const isHighlighted = highlightedId === industry.id || highlightedId === industry.slug;
 
               return (
                 <motion.div
                   key={industry.id}
+                  id={industry.id}
                   initial={{ opacity: 0, y: 18 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.45, delay: i * 0.08 }}
                   viewport={{ once: true }}
-                  className="card-hover bg-white border border-slate-200/90 rounded-2xl p-7 flex flex-col justify-between shadow-xs hover:border-[#C49A6C] transition-all duration-200 group"
+                  animate={
+                    isHighlighted
+                      ? {
+                          scale: [1, 1.035, 1.015, 1.035, 1],
+                          boxShadow: [
+                            '0 0 0px 0px rgba(196,154,108,0)',
+                            '0 0 45px 10px rgba(196,154,108,0.55), 0 0 0 2.5px #C49A6C',
+                            '0 0 25px 5px rgba(196,154,108,0.30), 0 0 0 2px #C49A6C',
+                            '0 0 45px 10px rgba(196,154,108,0.55), 0 0 0 2.5px #C49A6C',
+                            '0 0 0px 0px rgba(196,154,108,0)',
+                          ],
+                        }
+                      : {}
+                  }
+                  className={`card-hover bg-white border rounded-2xl p-7 flex flex-col justify-between transition-all duration-500 group scroll-mt-28 relative ${
+                    isHighlighted
+                      ? 'border-[#C49A6C] ring-2 ring-[#C49A6C] bg-gradient-to-b from-[#C49A6C]/[0.08] to-white'
+                      : 'border-slate-200/90 shadow-xs hover:border-[#C49A6C]'
+                  }`}
                 >
                   <div>
                     {/* Header Row */}
@@ -81,6 +103,17 @@ export default function Industries() {
                         {industry.number}
                       </span>
                     </div>
+
+                    {isHighlighted && (
+                      <motion.div
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-[#071A3D] text-[#C49A6C] text-[10px] font-black tracking-widest uppercase mb-3 shadow-xs border border-[#C49A6C]/40"
+                      >
+                        <span className="w-1.5 h-1.5 rounded-full bg-[#C49A6C] animate-ping inline-block" />
+                        Selected Sector
+                      </motion.div>
+                    )}
 
                     <div className="w-6 h-[2.5px] bg-[#C49A6C] rounded-full mb-3" />
 

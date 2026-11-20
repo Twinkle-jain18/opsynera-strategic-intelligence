@@ -61,22 +61,58 @@ export default function Footer() {
             </h4>
             <ul className="space-y-2.5 text-xs text-slate-300 font-medium">
               <li>
-                <Link to="/services#strategic-risk-advisory" className="hover:text-[#C49A6C] transition-colors">Strategic Risk Advisory</Link>
+                <Link
+                  to="/services#strategic-risk-advisory"
+                  onClick={() => window.dispatchEvent(new CustomEvent('hash-nav', { detail: { id: 'strategic-risk-advisory' } }))}
+                  className="hover:text-[#C49A6C] transition-colors"
+                >
+                  Strategic Risk Advisory
+                </Link>
               </li>
               <li>
-                <Link to="/services#due-diligence" className="hover:text-[#C49A6C] transition-colors">Due Diligence & Background</Link>
+                <Link
+                  to="/services#due-diligence"
+                  onClick={() => window.dispatchEvent(new CustomEvent('hash-nav', { detail: { id: 'due-diligence' } }))}
+                  className="hover:text-[#C49A6C] transition-colors"
+                >
+                  Due Diligence & Background
+                </Link>
               </li>
               <li>
-                <Link to="/services#osint-research" className="hover:text-[#C49A6C] transition-colors">OSINT & Intelligence Research</Link>
+                <Link
+                  to="/services#osint-research"
+                  onClick={() => window.dispatchEvent(new CustomEvent('hash-nav', { detail: { id: 'osint-research' } }))}
+                  className="hover:text-[#C49A6C] transition-colors"
+                >
+                  OSINT & Intelligence Research
+                </Link>
               </li>
               <li>
-                <Link to="/services#cyber-digital-risk" className="hover:text-[#C49A6C] transition-colors">Cyber & Digital Risk Advisory</Link>
+                <Link
+                  to="/services#cyber-digital-risk"
+                  onClick={() => window.dispatchEvent(new CustomEvent('hash-nav', { detail: { id: 'cyber-digital-risk' } }))}
+                  className="hover:text-[#C49A6C] transition-colors"
+                >
+                  Cyber & Digital Risk Advisory
+                </Link>
               </li>
               <li>
-                <Link to="/services#field-verification" className="hover:text-[#C49A6C] transition-colors">Field Verification & Ground</Link>
+                <Link
+                  to="/services#field-verification"
+                  onClick={() => window.dispatchEvent(new CustomEvent('hash-nav', { detail: { id: 'field-verification' } }))}
+                  className="hover:text-[#C49A6C] transition-colors"
+                >
+                  Field Verification & Ground
+                </Link>
               </li>
               <li>
-                <Link to="/services#corporate-intelligence" className="hover:text-[#C49A6C] transition-colors">Corporate Intelligence Advisory</Link>
+                <Link
+                  to="/services#corporate-intelligence"
+                  onClick={() => window.dispatchEvent(new CustomEvent('hash-nav', { detail: { id: 'corporate-intelligence' } }))}
+                  className="hover:text-[#C49A6C] transition-colors"
+                >
+                  Corporate Intelligence Advisory
+                </Link>
               </li>
             </ul>
           </div>

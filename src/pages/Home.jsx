@@ -232,6 +232,9 @@ export default function Home() {
                   <Link
                     key={service.id}
                     to={`/services#${service.slug}`}
+                    onClick={() => {
+                      window.dispatchEvent(new CustomEvent('hash-nav', { detail: { id: service.slug } }));
+                    }}
                     className={`group flex flex-col items-center text-center p-3 rounded-xl transition-all duration-200 hover:bg-white/5 relative ${
                       idx < keyServicesNav.length - 1 ? 'xl:border-r xl:border-slate-700/40' : ''
                     }`}
@@ -431,23 +434,27 @@ export default function Home() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {industries.slice(0, 3).map((ind) => (
-              <div
+              <Link
                 key={ind.id}
-                className="bg-white/5 border border-white/10 rounded-2xl p-6 hover:bg-white/10 hover:border-[#C49A6C]/50 transition-all duration-200"
+                to={`/industries#${ind.id}`}
+                onClick={() => {
+                  window.dispatchEvent(new CustomEvent('hash-nav', { detail: { id: ind.id } }));
+                }}
+                className="bg-white/5 border border-white/10 rounded-2xl p-6 hover:bg-white/10 hover:border-[#C49A6C]/50 transition-all duration-200 block group"
               >
                 <div className="text-2xl font-black text-[#C49A6C] mb-3">
                   {ind.number}
                 </div>
-                <h3 className="text-base font-bold text-white mb-2">
+                <h3 className="text-base font-bold text-white mb-2 group-hover:text-[#C49A6C] transition-colors">
                   {ind.title}
                 </h3>
                 <p className="text-xs text-slate-300 leading-relaxed mb-4">
                   {ind.description}
                 </p>
-                <Link to="/industries" className="text-[11px] font-bold text-[#C49A6C] hover:underline inline-flex items-center gap-1">
-                  Read Industry Focus <ArrowRight size={12} />
-                </Link>
-              </div>
+                <span className="text-[11px] font-bold text-[#C49A6C] group-hover:underline inline-flex items-center gap-1">
+                  Read Industry Focus <ArrowRight size={12} className="transition-transform group-hover:translate-x-1" />
+                </span>
+              </Link>
             ))}
           </div>
         </div>

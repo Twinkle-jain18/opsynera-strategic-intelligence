@@ -167,6 +167,10 @@ export default function Navbar({ onLogoClick }) {
                         <Link
                           key={s.id}
                           to={`/services#${s.slug}`}
+                          onClick={() => {
+                            setServicesDropdown(false);
+                            window.dispatchEvent(new CustomEvent('hash-nav', { detail: { id: s.slug } }));
+                          }}
                           className="flex items-start gap-2.5 p-2.5 rounded-lg hover:bg-slate-50 transition-colors group"
                         >
                           <div className="w-7 h-7 rounded-md bg-[#071A3D] flex items-center justify-center flex-shrink-0 group-hover:bg-[#C49A6C] transition-colors mt-0.5">
@@ -225,7 +229,11 @@ export default function Navbar({ onLogoClick }) {
                       return (
                         <Link
                           key={ind.id}
-                          to={`/industries`}
+                          to={`/industries#${ind.id}`}
+                          onClick={() => {
+                            setIndustriesDropdown(false);
+                            window.dispatchEvent(new CustomEvent('hash-nav', { detail: { id: ind.id } }));
+                          }}
                           className="flex items-start gap-2.5 p-2.5 rounded-lg hover:bg-slate-50 transition-colors group"
                         >
                           <div className="w-7 h-7 rounded-md bg-[#071A3D] flex items-center justify-center flex-shrink-0 group-hover:bg-[#C49A6C] transition-colors mt-0.5">

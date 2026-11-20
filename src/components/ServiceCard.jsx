@@ -20,40 +20,44 @@ export default function ServiceCard({ service, index }) {
       whileInView={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.45, delay: index * 0.06 }}
       viewport={{ once: true }}
-      className="card-hover bg-white border border-slate-200/90 rounded-2xl p-7 flex flex-col justify-between shadow-xs hover:border-[#C49A6C] transition-all duration-200 group"
+      className="card-hover bg-white border border-slate-200/90 rounded-2xl shadow-xs hover:border-[#C49A6C] transition-all duration-200 group relative"
     >
-      <div>
-        {/* Header row: Icon & Number */}
-        <div className="flex items-center justify-between mb-5">
-          <div className="w-11 h-11 rounded-xl bg-[#071A3D] flex items-center justify-center flex-shrink-0 group-hover:bg-[#0B2450] transition-colors shadow-sm">
-            <Icon size={20} className="text-[#C49A6C]" strokeWidth={2} />
+      <Link
+        to={`/services#${service.slug}`}
+        onClick={() => {
+          window.dispatchEvent(new CustomEvent('hash-nav', { detail: { id: service.slug } }));
+        }}
+        className="p-7 flex flex-col justify-between h-full w-full"
+        aria-label={`Explore ${service.title}`}
+      >
+        <div>
+          {/* Header row: Icon & Number */}
+          <div className="flex items-center justify-between mb-5">
+            <div className="w-11 h-11 rounded-xl bg-[#071A3D] flex items-center justify-center flex-shrink-0 group-hover:bg-[#0B2450] transition-colors shadow-sm">
+              <Icon size={20} className="text-[#C49A6C]" strokeWidth={2} />
+            </div>
+            <span className="text-xs font-black tracking-widest text-[#C49A6C] uppercase">
+              Service {service.number}
+            </span>
           </div>
-          <span className="text-xs font-black tracking-widest text-[#C49A6C] uppercase">
-            Service {service.number}
-          </span>
+
+          {/* Title */}
+          <h3 className="text-lg font-bold text-[#071A3D] leading-snug mb-3 group-hover:text-[#1676C5] transition-colors">
+            {service.title}
+          </h3>
+
+          {/* Description */}
+          <p className="text-xs sm:text-[13.5px] text-slate-600 leading-relaxed mb-6">
+            {service.shortDesc}
+          </p>
         </div>
 
-        {/* Title */}
-        <h3 className="text-lg font-bold text-[#071A3D] leading-snug mb-3 group-hover:text-[#1676C5] transition-colors">
-          {service.title}
-        </h3>
-
-        {/* Description */}
-        <p className="text-xs sm:text-[13.5px] text-slate-600 leading-relaxed mb-6">
-          {service.shortDesc}
-        </p>
-      </div>
-
-      {/* Footer link */}
-      <div className="pt-4 border-t border-slate-100 flex items-center justify-between">
-        <Link
-          to={`/services#${service.slug}`}
-          className="text-xs font-bold text-[#071A3D] group-hover:text-[#C49A6C] transition-colors flex items-center gap-1.5 uppercase tracking-wider"
-          aria-label={`Explore ${service.title}`}
-        >
-          Explore Service <ArrowRight size={13} className="transition-transform group-hover:translate-x-1" />
-        </Link>
-      </div>
+        {/* Footer link */}
+        <div className="pt-4 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-[#071A3D] group-hover:text-[#C49A6C] transition-colors uppercase tracking-wider">
+          <span>Explore Service</span>
+          <ArrowRight size={13} className="transition-transform group-hover:translate-x-1" />
+        </div>
+      </Link>
     </motion.div>
   );
 }
