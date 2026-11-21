@@ -16,7 +16,10 @@ service cloud.firestore {
 
     function isAdmin() {
       return request.auth != null
-          && request.auth.uid == 'A0IdyBXXwjODn1noyaQjRiGIUQg2';
+          && (
+            exists(/databases/$(database)/documents/admins/$(request.auth.uid))
+            || request.auth.uid == 'A0IdyBXXwjODn1noyaQjRiGIUQg2'
+          );
     }
 
 
@@ -42,7 +45,7 @@ service cloud.firestore {
 
     function isValidInquiry() {
       let d = request.resource.data;
-      return
+      return (
 
         // ── STRUCTURE ─────────────────────────────────────────────────
 
@@ -108,10 +111,11 @@ service cloud.firestore {
         && d.industry.matches('.*\\S.*')
 
         // service — string, 1–150 chars, not whitespace-only
-        && d.service       is string
-        && d.service.size()       >= 1
-        && d.service.size()       <= 150
-        && d.service.matches('.*\\S.*')
+        // Accessed via bracket notation because 'service' is a reserved rules keyword
+        && d['service']    is string
+        && d['service'].size()    >= 1
+        && d['service'].size()    <= 150
+        && d['service'].matches('.*\\S.*')
 
         // description — string, 10–2000 chars, not whitespace-only
         // Minimum 10 chars ensures the message is substantive.
@@ -124,7 +128,8 @@ service cloud.firestore {
         && d.contactMethod is string
         && d.contactMethod.size() >= 1
         && d.contactMethod.size() <= 30
-        && d.contactMethod.matches('.*\\S.*');
+        && d.contactMethod.matches('.*\\S.*')
+      );
     }
 
 
@@ -161,7 +166,7 @@ service cloud.firestore {
       let prev = resource.data;          // current saved document
       let next = request.resource.data;  // merged document after update
 
-      return
+      return (
 
         // ── IMMUTABLE FIELDS — dual-check for presence AND value ─────────
         // A value-only comparison (next.get() == prev.get()) has a gap:
@@ -278,7 +283,8 @@ service cloud.firestore {
         && (
           !next.keys().hasAny(['adminNotes'])
           || (next.adminNotes is string && next.adminNotes.size() <= 1000)
-        );
+        )
+      );
     }
 
 
@@ -324,6 +330,20 @@ service cloud.firestore {
 
     match /industries/{industryId} {
       allow read:                   if true;
+      allow create, update, delete: if isAdmin();
+    }
+
+
+    // ════════════════════════════════════════════════════════════════════
+    // ADMINS COLLECTION
+    //
+    // Tracks authorized admin credentials and roles in Firestore DB.
+    // read   → authenticated user can check their own admin doc, or admin can read
+    // write  → admin only
+    // ════════════════════════════════════════════════════════════════════
+
+    match /admins/{adminId} {
+      allow read:                   if request.auth != null && (request.auth.uid == adminId || isAdmin());
       allow create, update, delete: if isAdmin();
     }
 
