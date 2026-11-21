@@ -1,32 +1,26 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   FileText, Mail, Settings, LogOut, Eye,
   Shield, Globe, AlertTriangle, Lock,
   ChevronRight, BarChart2, X, ExternalLink,
   Plus, Edit2, Trash2, Phone, MessageCircle, Save,
-  Building2, Layers, Briefcase, Landmark, Monitor,
+  Building2, Layers, Briefcase, Landmark, Monitor, Loader2
 } from 'lucide-react';
 import { signOut } from 'firebase/auth';
-import { auth } from '../firebase';
+import { collection, onSnapshot, query, orderBy, doc, updateDoc, deleteDoc } from 'firebase/firestore';
+import { auth, db } from '../firebase';
 import { useSiteData } from '../context/SiteDataContext';
 import { useToast } from '../context/ToastContext';
 import { services as defaultServices } from '../data/services';
 import { industries as defaultIndustries } from '../data/industries';
 
-// ── Demo Contact Inquiries with phone numbers ────────────────────
-const INITIAL_CONTACTS = [
-  { id: 1, name: 'Rajiv Sharma',   company: 'Infosys Ltd',           service: 'Due Diligence',           phone: '+91 98201 34567', email: 'rajiv@infosys.com',         date: '2025-11-14', status: 'New',      contactPref: 'Email' },
-  { id: 2, name: 'Priya Mehta',    company: 'SBI Capital Markets',    service: 'Strategic Risk Advisory',  phone: '+91 97302 56789', email: 'priya@sbicap.com',          date: '2025-11-13', status: 'Reviewed', contactPref: 'Phone' },
-  { id: 3, name: 'Ahmed Al-Farsi', company: 'Gulf Infrastructure',    service: 'Field Verification',       phone: '+971 50 123 4567',email: 'ahmed@gulfinfra.ae',        date: '2025-11-12', status: 'New',      contactPref: 'WhatsApp' },
-  { id: 4, name: 'Chen Wei',       company: 'Horizons Capital',       service: 'OSINT Research',           phone: '+65 9123 4567',   email: 'cwei@horizons.sg',          date: '2025-11-11', status: 'Closed',   contactPref: 'Email' },
-  { id: 5, name: "Sarah O'Brien",  company: 'Meridian Consulting',    service: 'Corporate Intelligence',   phone: '+44 7911 234567', email: 'sarah@meridianconsult.co.uk',date: '2025-11-10', status: 'Reviewed', contactPref: 'Phone' },
-];
-
 const STATUS_STYLES = {
-  New:      'bg-blue-100 text-blue-700',
-  Reviewed: 'bg-amber-100 text-amber-700',
-  Closed:   'bg-green-100 text-green-700',
+  New:         'bg-blue-100 text-blue-700',
+  'In Review': 'bg-amber-100 text-amber-700',
+  Reviewed:    'bg-amber-100 text-amber-700', // legacy support
+  Responded:   'bg-purple-100 text-purple-700',
+  Closed:      'bg-green-100 text-green-700',
 };
 
 const ICON_OPTIONS = ['Building2', 'Landmark', 'Monitor', 'Layers', 'Briefcase', 'Globe', 'Shield'];
@@ -325,13 +319,101 @@ function IndustriesManager() {
 // ═══════════════════════════════════════════════════════════════
 function ContactsManager() {
   const { addToast } = useToast();
-  const [contacts, setContacts]   = useState(INITIAL_CONTACTS);
+  const [contacts, setContacts]   = useState([]);
+  const [loading, setLoading]     = useState(true);
   const [viewing, setViewing]     = useState(null);
   const [deleting, setDeleting]   = useState(null);
+  const [adminNotesInput, setAdminNotesInput] = useState('');
+  const [savingNotes, setSavingNotes] = useState(false);
 
-  const updateStatus = (id, status, name) => {
-    setContacts((prev) => prev.map((c) => c.id === id ? { ...c, status } : c));
-    addToast(`${name}'s inquiry marked as "${status}".`, 'info');
+  // Live Firestore subscription to 'inquiries' collection
+  useEffect(() => {
+    setLoading(true);
+    const q = query(collection(db, 'inquiries'), orderBy('submittedAt', 'desc'));
+    const unsubscribe = onSnapshot(
+      q,
+      (snapshot) => {
+        const list = snapshot.docs.map((docSnap) => {
+          const data = docSnap.data();
+          let dateStr = 'Recent';
+          if (data.submittedAt?.toDate) {
+            dateStr = data.submittedAt.toDate().toLocaleString('en-GB', {
+              day: '2-digit', month: 'short', year: 'numeric',
+              hour: '2-digit', minute: '2-digit'
+            });
+          }
+          return {
+            id: docSnap.id,
+            name: data.fullName || 'Anonymous',
+            company: data.company || '—',
+            service: data.service || '—',
+            industry: data.industry || '—',
+            phone: data.phone || '—',
+            email: data.email || '—',
+            description: data.description || '',
+            contactPref: data.contactMethod || 'Email',
+            date: dateStr,
+            status: data.status || 'New',
+            adminNotes: data.adminNotes || '',
+          };
+        });
+        setContacts(list);
+        setLoading(false);
+      },
+      (err) => {
+        console.error('Error fetching inquiries from Firestore:', err);
+        setLoading(false);
+        addToast('Failed to connect to Firestore inquiries collection.', 'error');
+      }
+    );
+    return () => unsubscribe();
+  }, [addToast]);
+
+  // Sync admin notes input when viewing changes
+  useEffect(() => {
+    if (viewing) {
+      setAdminNotesInput(viewing.adminNotes || '');
+    }
+  }, [viewing]);
+
+  const updateStatus = async (id, status, name) => {
+    try {
+      await updateDoc(doc(db, 'inquiries', id), { status });
+      addToast(`${name || 'Inquiry'}'s status marked as "${status}".`, 'info');
+      if (viewing && viewing.id === id) {
+        setViewing((prev) => ({ ...prev, status }));
+      }
+    } catch (err) {
+      console.error('Error updating status in Firestore:', err);
+      addToast('Failed to update status. Check permissions.', 'error');
+    }
+  };
+
+  const handleDelete = async (id, name) => {
+    try {
+      await deleteDoc(doc(db, 'inquiries', id));
+      addToast(`Inquiry from "${name || 'Client'}" deleted.`, 'warning');
+      setDeleting(null);
+      if (viewing && viewing.id === id) setViewing(null);
+    } catch (err) {
+      console.error('Error deleting inquiry in Firestore:', err);
+      addToast('Failed to delete inquiry.', 'error');
+    }
+  };
+
+  const handleSaveNotes = async () => {
+    if (!viewing) return;
+    setSavingNotes(true);
+    try {
+      await updateDoc(doc(db, 'inquiries', viewing.id), { adminNotes: adminNotesInput.trim() });
+      addToast('Internal notes saved successfully.', 'success');
+      setViewing((prev) => ({ ...prev, adminNotes: adminNotesInput.trim() }));
+    } catch (err) {
+      console.error('Error saving notes in Firestore:', err);
+      addToast('Failed to save notes.', 'error');
+    } finally {
+      setSavingNotes(false);
+    }
   };
 
   const waLink  = (phone, name) =>
@@ -342,14 +424,32 @@ function ContactsManager() {
   return (
     <div className="space-y-5">
       <div className="flex items-center justify-between">
-        <p className="text-xs text-slate-500 font-medium">{contacts.length} contacts · {contacts.filter((c) => c.status === 'New').length} new</p>
+        <p className="text-xs text-slate-500 font-medium">
+          {loading ? 'Connecting to Firestore...' : `${contacts.length} inquiries · ${contacts.filter((c) => c.status === 'New').length} new`}
+        </p>
       </div>
 
-      <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden">
+      <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-xs">
+        {loading ? (
+          <div className="py-16 flex flex-col items-center justify-center gap-3 text-slate-400">
+            <Loader2 size={24} className="animate-spin text-[#C49A6C]" />
+            <span className="text-xs font-semibold">Loading inquiries from database...</span>
+          </div>
+        ) : contacts.length === 0 ? (
+          <div className="py-16 flex flex-col items-center justify-center text-center px-4">
+            <div className="w-12 h-12 rounded-2xl bg-slate-100 flex items-center justify-center text-slate-400 mb-3">
+              <Mail size={22} />
+            </div>
+            <h4 className="text-sm font-bold text-[#071A3D] mb-1">No Client Inquiries Yet</h4>
+            <p className="text-xs text-slate-400 max-w-sm leading-relaxed">
+              New submissions from the website contact form will appear here in real-time.
+            </p>
+          </div>
+        ) : (
         <table className="w-full">
           <thead className="bg-slate-50 border-b border-slate-200">
             <tr>
-              {['Contact', 'Service', 'Phone', 'Pref.', 'Date', 'Status', 'Actions'].map((h) => (
+              {['Contact', 'Service', 'Phone', 'Pref.', 'Submitted', 'Status', 'Actions'].map((h) => (
                 <th key={h} className="px-4 py-3 text-left text-[10px] font-black tracking-widest text-slate-500 uppercase whitespace-nowrap">{h}</th>
               ))}
             </tr>
@@ -375,7 +475,7 @@ function ContactsManager() {
                 <td className="px-4 py-3.5">
                   <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full whitespace-nowrap ${
                     c.contactPref === 'WhatsApp' ? 'bg-green-100 text-green-700' :
-                    c.contactPref === 'Phone'    ? 'bg-blue-100 text-blue-700' :
+                    c.contactPref === 'Phone' || c.contactPref === 'Phone Call' ? 'bg-blue-100 text-blue-700' :
                     'bg-slate-100 text-slate-600'
                   }`}>{c.contactPref}</span>
                 </td>
@@ -383,11 +483,12 @@ function ContactsManager() {
                 <td className="px-4 py-3.5">
                   <select
                     value={c.status}
-                    onChange={(e) => updateStatus(c.id, e.target.value)}
-                    className={`text-[10px] font-bold px-2 py-1 rounded-full border-0 cursor-pointer focus:outline-none focus:ring-1 focus:ring-[#071A3D]/20 ${STATUS_STYLES[c.status]}`}
+                    onChange={(e) => updateStatus(c.id, e.target.value, c.name)}
+                    className={`text-[10px] font-bold px-2 py-1 rounded-full border-0 cursor-pointer focus:outline-none focus:ring-1 focus:ring-[#071A3D]/20 ${STATUS_STYLES[c.status] || 'bg-slate-100 text-slate-700'}`}
                   >
                     <option value="New">New</option>
-                    <option value="Reviewed">Reviewed</option>
+                    <option value="In Review">In Review</option>
+                    <option value="Responded">Responded</option>
                     <option value="Closed">Closed</option>
                   </select>
                 </td>
@@ -415,15 +516,15 @@ function ContactsManager() {
                     <button
                       onClick={() => setViewing(c)}
                       title="View details"
-                      className="p-1.5 rounded-lg text-slate-400 hover:text-[#071A3D] hover:bg-slate-100 transition-colors"
+                      className="p-1.5 rounded-lg text-slate-400 hover:text-[#071A3D] hover:bg-slate-100 transition-colors cursor-pointer"
                     >
                       <Eye size={13} />
                     </button>
                     {/* Delete */}
                     <button
                       onClick={() => setDeleting(c)}
-                      title="Delete"
-                      className="p-1.5 rounded-lg text-slate-400 hover:text-red-500 hover:bg-red-50 transition-colors"
+                      title="Delete from database"
+                      className="p-1.5 rounded-lg text-slate-400 hover:text-red-500 hover:bg-red-50 transition-colors cursor-pointer"
                     >
                       <Trash2 size={13} />
                     </button>
@@ -433,46 +534,127 @@ function ContactsManager() {
             ))}
           </tbody>
         </table>
+        )}
       </div>
 
-      {/* Detail Modal */}
+      {/* Detail Modal with Description & Admin Notes */}
       <AnimatePresence>
         {viewing && (
-          <Modal title="Contact Detail" onClose={() => setViewing(null)}>
-            <div className="p-6 space-y-3">
-              {[
-                ['Name',     viewing.name],
-                ['Company',  viewing.company],
-                ['Email',    viewing.email],
-                ['Phone',    viewing.phone],
-                ['Service',  viewing.service],
-                ['Pref.',    viewing.contactPref],
-                ['Date',     viewing.date],
-                ['Status',   viewing.status],
-              ].map(([label, value]) => (
-                <div key={label} className="flex items-center justify-between py-2 border-b border-slate-100 last:border-0">
-                  <span className="text-xs font-bold text-slate-500 uppercase tracking-wide">{label}</span>
-                  <span className="text-xs font-semibold text-[#071A3D] text-right">{value}</span>
+          <Modal title={`Inquiry: ${viewing.name}`} onClose={() => setViewing(null)} wide={true}>
+            <div className="p-6 space-y-4 max-h-[75vh] overflow-y-auto">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pb-3 border-b border-slate-100 text-xs">
+                <div>
+                  <span className="font-bold text-slate-400 uppercase tracking-wide block text-[10px]">Client Name</span>
+                  <span className="font-bold text-[#071A3D] text-sm">{viewing.name}</span>
                 </div>
-              ))}
-              <div className="flex gap-2 pt-3">
-                <a href={waLink(viewing.phone, viewing.name)} target="_blank" rel="noopener" className="flex-1 py-2.5 rounded-xl bg-green-600 text-white text-xs font-bold flex items-center justify-center gap-1.5 hover:bg-green-700 transition-colors">
-                  <MessageCircle size={13} /> WhatsApp
-                </a>
-                <a href={callLink(viewing.phone)} className="flex-1 py-2.5 rounded-xl bg-blue-600 text-white text-xs font-bold flex items-center justify-center gap-1.5 hover:bg-blue-700 transition-colors">
-                  <Phone size={13} /> Call
-                </a>
+                <div>
+                  <span className="font-bold text-slate-400 uppercase tracking-wide block text-[10px]">Organization</span>
+                  <span className="font-bold text-[#071A3D] text-sm">{viewing.company}</span>
+                </div>
+                <div>
+                  <span className="font-bold text-slate-400 uppercase tracking-wide block text-[10px]">Email Address</span>
+                  <a href={`mailto:${viewing.email}`} className="text-blue-600 hover:underline font-semibold">{viewing.email}</a>
+                </div>
+                <div>
+                  <span className="font-bold text-slate-400 uppercase tracking-wide block text-[10px]">Phone Number</span>
+                  <a href={callLink(viewing.phone)} className="text-blue-600 hover:underline font-mono font-semibold">{viewing.phone}</a>
+                </div>
+                <div>
+                  <span className="font-bold text-slate-400 uppercase tracking-wide block text-[10px]">Service Requested</span>
+                  <span className="text-[#071A3D] font-semibold">{viewing.service}</span>
+                </div>
+                <div>
+                  <span className="font-bold text-slate-400 uppercase tracking-wide block text-[10px]">Industry Sector</span>
+                  <span className="text-[#071A3D] font-semibold">{viewing.industry}</span>
+                </div>
+                <div>
+                  <span className="font-bold text-slate-400 uppercase tracking-wide block text-[10px]">Preferred Contact</span>
+                  <span className="text-[#071A3D] font-semibold">{viewing.contactPref}</span>
+                </div>
+                <div>
+                  <span className="font-bold text-slate-400 uppercase tracking-wide block text-[10px]">Submission Time</span>
+                  <span className="text-slate-600 font-mono">{viewing.date}</span>
+                </div>
               </div>
+
+              {/* Client Inquiry Description */}
+              <div>
+                <span className="font-bold text-slate-500 uppercase tracking-wider block text-[10px] mb-1.5">
+                  Client Requirement Description:
+                </span>
+                <div className="bg-slate-50 p-4 rounded-xl border border-slate-200 text-xs text-slate-700 leading-relaxed whitespace-pre-wrap">
+                  {viewing.description || 'No description provided.'}
+                </div>
+              </div>
+
+              {/* Status Selector & Direct Action Buttons */}
+              <div className="flex flex-wrap items-center justify-between gap-3 pt-2">
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-bold text-slate-500">Status:</span>
+                  <select
+                    value={viewing.status}
+                    onChange={(e) => updateStatus(viewing.id, e.target.value, viewing.name)}
+                    className={`text-xs font-bold px-3 py-1.5 rounded-xl border border-slate-200 cursor-pointer ${STATUS_STYLES[viewing.status] || 'bg-slate-100 text-slate-700'}`}
+                  >
+                    <option value="New">New</option>
+                    <option value="In Review">In Review</option>
+                    <option value="Responded">Responded</option>
+                    <option value="Closed">Closed</option>
+                  </select>
+                </div>
+
+                <div className="flex gap-2">
+                  <a
+                    href={waLink(viewing.phone, viewing.name)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="px-4 py-2 rounded-xl bg-green-600 text-white text-xs font-bold flex items-center gap-1.5 hover:bg-green-700 transition-colors shadow-xs"
+                  >
+                    <MessageCircle size={14} /> WhatsApp
+                  </a>
+                  <a
+                    href={callLink(viewing.phone)}
+                    className="px-4 py-2 rounded-xl bg-blue-600 text-white text-xs font-bold flex items-center gap-1.5 hover:bg-blue-700 transition-colors shadow-xs"
+                  >
+                    <Phone size={14} /> Call
+                  </a>
+                </div>
+              </div>
+
+              {/* Admin Internal Notes (Saved to DB) */}
+              <div className="pt-3 border-t border-slate-100">
+                <div className="flex items-center justify-between mb-1.5">
+                  <span className="font-bold text-slate-500 uppercase tracking-wider text-[10px]">
+                    Internal Advisory Notes (Admin Only, Saved to Database):
+                  </span>
+                  <button
+                    onClick={handleSaveNotes}
+                    disabled={savingNotes}
+                    className="text-xs font-bold text-[#071A3D] hover:text-[#C49A6C] flex items-center gap-1 transition-colors cursor-pointer"
+                  >
+                    <Save size={13} /> {savingNotes ? 'Saving...' : 'Save Notes'}
+                  </button>
+                </div>
+                <textarea
+                  value={adminNotesInput}
+                  onChange={(e) => setAdminNotesInput(e.target.value)}
+                  placeholder="Record internal case notes, research assignments, or clearance tags..."
+                  rows={3}
+                  className="w-full p-3 rounded-xl border border-slate-200 text-xs text-slate-700 outline-none focus:border-[#071A3D] focus:ring-1 focus:ring-[#071A3D]/20 transition-all resize-none"
+                />
+              </div>
+
             </div>
           </Modal>
         )}
       </AnimatePresence>
 
+      {/* Delete Confirmation Modal */}
       <AnimatePresence>
         {deleting && (
           <DeleteConfirm
             name={deleting.name}
-            onConfirm={() => { setContacts((p) => p.filter((c) => c.id !== deleting.id)); setDeleting(null); }}
+            onConfirm={() => handleDelete(deleting.id, deleting.name)}
             onClose={() => setDeleting(null)}
           />
         )}
@@ -575,17 +757,17 @@ export default function AdminPanel({ onLogout }) {
               {activeTab === 'settings' && (
                 <div className="space-y-5 max-w-2xl">
                   {[
-                    { title: 'Site Configuration', Icon: Globe, items: [
+                    { title: 'Database & Environment', Icon: Globe, items: [
                       ['Site Name', 'Opsynera – Strategic Intelligence Advisory'],
-                      ['Mode', 'Demo (no backend connected)'],
-                      ['Version', '1.0.0'],
+                      ['Backend Database', 'Cloud Firestore (asia-south1)'],
+                      ['Project ID', 'opsynera-intelligence'],
+                      ['Inquiries Connection', 'Live Firestore Real-time Stream'],
                     ]},
-                    { title: 'Security', Icon: Lock, items: [
-                      ['Admin Username',     'admin'],
-                      ['Password Policy',    'Upper + Lower + Number + Special'],
-                      ['Session Type',       'In-memory (clears on page reload)'],
-                      ['Max Login Attempts', '3 (30s lockout)'],
-                      ['Recovery Email',     'opsynerastatintadvisory@gmail.com'],
+                    { title: 'Security & Access Control', Icon: Lock, items: [
+                      ['Authenticated Account', auth.currentUser?.email || 'Authorized Administrator'],
+                      ['Role & Permission',    'Superadmin (Stored in Firestore DB)'],
+                      ['Session Persistence',  'Firebase Auth Secure State'],
+                      ['Recovery Email',       'opsynerastatintadvisory@gmail.com'],
                     ]},
                   ].map(({ title, Icon, items }) => (
                     <div key={title} className="bg-white rounded-2xl border border-slate-200 overflow-hidden">
