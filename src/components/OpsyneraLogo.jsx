@@ -1,17 +1,28 @@
 import { Link } from 'react-router-dom';
 import logoImg from '../assets/logo.png';
 
-export default function OpsyneraLogo({ dark = false, size = 42, showSubtitle = true, className = "" }) {
+export default function OpsyneraLogo({
+  dark = false,
+  size = 42,
+  showSubtitle = true,
+  className = "",
+  idPrefix,
+  hideForSplash = false,
+  isReload = false,
+}) {
   return (
     <div className={`flex items-center gap-3 select-none ${className}`}>
       {/* Company Official Crest Container */}
       <div
+        id={idPrefix ? `${idPrefix}-logo-crest` : undefined}
         className="rounded-xl flex items-center justify-center flex-shrink-0 transition-transform duration-300 hover:scale-105 shadow-sm overflow-hidden"
         style={{
           width: `${size}px`,
           height: `${size}px`,
           backgroundColor: '#071A3D',
           border: '1px solid rgba(244, 179, 35, 0.4)',
+          opacity: hideForSplash ? 0 : 1,
+          transition: 'opacity 0.2s ease',
         }}
       >
         <img
@@ -27,7 +38,14 @@ export default function OpsyneraLogo({ dark = false, size = 42, showSubtitle = t
       </div>
 
       {/* Typography */}
-      <div className="flex flex-col justify-center">
+      <div
+        id={idPrefix ? `${idPrefix}-logo-text` : undefined}
+        className="flex flex-col justify-center"
+        style={{
+          opacity: hideForSplash ? 0 : 1,
+          transition: isReload ? 'opacity 0.65s ease' : 'opacity 0.2s ease',
+        }}
+      >
         <span
           className={`font-heading font-black tracking-[0.18em] text-[15px] sm:text-[17px] leading-tight ${
             dark ? 'text-white' : 'text-[#071A3D]'
