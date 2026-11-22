@@ -7,14 +7,11 @@ export default function CTASection({
   description = 'Share your requirements with Opsynera and explore how structured intelligence advisory may support your critical decision-making.',
   primaryBtn = 'Book a Consultation',
   primaryPath = '/contact',
-  secondaryBtn = 'Explore Our Services',
+  secondaryBtn = null,
   secondaryPath = '/services',
 }) {
   return (
-    <section className="bg-[#071A3D] text-white py-16 lg:py-20 relative overflow-hidden border-t-2 border-[#C49A6C]">
-      {/* Background subtle telemetry dots */}
-      <div className="absolute inset-0 dot-matrix-dark opacity-20 pointer-events-none" />
-
+    <section className="relative z-10 bg-[#071A3D] text-white py-12 lg:py-14 overflow-hidden border-t border-slate-800">
       <div className="site-container relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}

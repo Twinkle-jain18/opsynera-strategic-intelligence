@@ -20,7 +20,7 @@ export default function Services() {
   const { services } = useSiteData();
   const highlightedId = useHashScrollAndHighlight();
   return (
-    <main className="bg-white">
+    <main className="bg-transparent">
       <PageHero
         eyebrow="What We Offer"
         heading="Our Advisory Services"
@@ -29,8 +29,8 @@ export default function Services() {
       />
 
       {/* ── Services Directory ────────────────────────── */}
-      <section className="site-container py-16 lg:py-20">
-        <div className="space-y-16 lg:space-y-24">
+      <section className="site-container py-12 lg:py-16">
+        <div className="space-y-12 lg:space-y-16">
           {services.map((service, i) => {
             const Icon = serviceIcons[service.id] || ShieldCheck;
             const isEven = i % 2 === 0;
@@ -184,7 +184,7 @@ export default function Services() {
       </section>
 
       {/* ── Engagement Timeline Component ─────────────── */}
-      <section className="bg-[#F5F7FA] py-16 lg:py-24 border-t border-slate-200/80">
+      <section className="bg-[#F5F7FA]/75 backdrop-blur-[2px] py-16 lg:py-24 border-t border-slate-200/80">
         <div className="site-container">
           <div className="text-center max-w-2xl mx-auto mb-14">
             <div className="flex items-center justify-center gap-2 mb-2">

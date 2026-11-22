@@ -16,6 +16,7 @@ import Contact from './pages/Contact';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import AdminLogin from './components/AdminLogin';
 import AdminPanel from './pages/AdminPanel';
+import WatermarkBackground from './components/WatermarkBackground';
 
 // Fallback bootstrap UID used only during first-time database provisioning
 const BOOTSTRAP_ADMIN_UID = 'A0IdyBXXwjODn1noyaQjRiGIUQg2';
@@ -185,7 +186,10 @@ export default function App() {
           isReload={isReload}
         />
 
-        <div className="flex-1">
+        {/* Global Centered Subtle Logo Watermark */}
+        <WatermarkBackground />
+
+        <div className="flex-1 relative z-10">
           <AnimatedRoutes />
         </div>
         <Footer />

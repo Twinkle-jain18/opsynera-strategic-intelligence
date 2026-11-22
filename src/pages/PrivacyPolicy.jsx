@@ -2,52 +2,6 @@ import { motion } from 'framer-motion';
 import PageHero from '../components/PageHero';
 import { ShieldCheck, AlertCircle } from 'lucide-react';
 
-// Logo watermark — shown only on the Privacy Policy page
-function PageWatermark() {
-  return (
-    <div
-      aria-hidden="true"
-      style={{
-        position: 'fixed',
-        top: '50%',
-        left: '50%',
-        transform: 'translate(-50%, -50%)',
-        width: '260px',
-        height: '260px',
-        pointerEvents: 'none',
-        zIndex: 0,
-        userSelect: 'none',
-        opacity: 0.07,
-      }}
-    >
-      <div
-        style={{
-          width: '100%',
-          height: '100%',
-          backgroundColor: '#071A3D',
-          borderRadius: '50%',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          overflow: 'hidden',
-        }}
-      >
-        <img
-          src="/logo.png"
-          alt=""
-          style={{
-            width: '80%',
-            height: '80%',
-            objectFit: 'contain',
-            mixBlendMode: 'screen',
-            filter: 'brightness(1.6) sepia(0.4) hue-rotate(340deg) saturate(1.5)',
-          }}
-        />
-      </div>
-    </div>
-  );
-}
-
 const sections = [
   {
     title: '1. Overview',
@@ -104,8 +58,7 @@ const sections = [
 
 export default function PrivacyPolicy() {
   return (
-    <main className="bg-white">
-      <PageWatermark />
+    <main className="bg-transparent">
       <PageHero
         eyebrow="Compliance & Legal"
         heading="Privacy & Confidentiality Notice"

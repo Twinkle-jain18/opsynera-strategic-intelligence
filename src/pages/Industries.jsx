@@ -14,7 +14,7 @@ export default function Industries() {
   const { industries } = useSiteData();
   const highlightedId = useHashScrollAndHighlight();
   return (
-    <main className="bg-white">
+    <main className="bg-transparent">
       <PageHero
         eyebrow="Sectors We Serve"
         heading="Industries We Aim to Serve"
@@ -23,7 +23,7 @@ export default function Industries() {
       />
 
       {/* ── Intro Section ─────────────────────────────── */}
-      <section className="site-container py-16 lg:py-20">
+      <section className="site-container py-12 lg:py-16">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 items-center">
           
           <div className="lg:col-span-5">
@@ -58,7 +58,7 @@ export default function Industries() {
       </section>
 
       {/* ── Industry Cards Grid ───────────────────────── */}
-      <section className="bg-[#F5F7FA] py-16 lg:py-24 border-t border-slate-200/80">
+      <section className="bg-[#F5F7FA]/75 backdrop-blur-[2px] py-16 lg:py-24 border-t border-slate-200/80">
         <div className="site-container">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {industries.map((industry, i) => {

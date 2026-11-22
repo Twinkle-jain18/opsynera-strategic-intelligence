@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
-import { Menu, X, ChevronDown, ArrowRight, ShieldCheck, Search, Globe, Zap, MapPin, BarChart2, Building2, Landmark, Monitor, Layers, Briefcase } from 'lucide-react';
+import { Menu, X, ChevronDown, ArrowRight, Mail, ShieldCheck, Search, Globe, Zap, MapPin, BarChart2, Building2, Landmark, Monitor, Layers, Briefcase } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
 import OpsyneraLogo from './OpsyneraLogo';
 import { services } from '../data/services';
@@ -87,8 +87,9 @@ export default function Navbar({ onLogoClick, splashDone = true, isReload = fals
             />
           </Link>
 
-          {/* Center Navigation Links */}
-          <nav className="hidden lg:flex items-center gap-7 text-[13.5px] font-semibold text-[#071A3D]" aria-label="Main Navigation">
+          {/* Right Navigation & Action Container */}
+          <div className="hidden md:flex items-center gap-6 lg:gap-8">
+            <nav className="flex items-center gap-5 lg:gap-7 text-[13px] lg:text-[13.5px] font-semibold text-[#071A3D]" aria-label="Main Navigation">
             {/* Home */}
             <NavLink
               to="/"
@@ -259,45 +260,21 @@ export default function Navbar({ onLogoClick, splashDone = true, isReload = fals
                 )}
               </AnimatePresence>
             </div>
-
-            {/* Contact */}
-            <NavLink
-              to="/contact"
-              className={({ isActive }) =>
-                `relative py-1.5 transition-colors ${
-                  isActive ? 'text-[#071A3D] font-bold' : 'text-[#071A3D]/80 hover:text-[#071A3D]'
-                }`
-              }
-            >
-              {({ isActive }) => (
-                <>
-                  Contact
-                  {isActive && (
-                    <motion.span
-                      layoutId="navIndicator"
-                      className="absolute bottom-0 left-0 right-0 h-[2.5px] bg-[#C49A6C] rounded-full"
-                    />
-                  )}
-                </>
-              )}
-            </NavLink>
           </nav>
 
-          {/* Right Action Buttons */}
-          <div className="hidden lg:flex items-center gap-3">
-
-            {/* Get in Touch Button (Gold pill) */}
+            {/* Get in Touch Button */}
             <Link
               to="/contact"
-              className="btn-gold text-xs px-5 py-2 flex items-center gap-1.5"
+              className="btn-gold text-xs px-5 py-2 flex items-center gap-1.5 shadow-xs flex-shrink-0"
             >
-              Get in Touch <ArrowRight size={13} />
+              <Mail size={13} />
+              Get in Touch
             </Link>
           </div>
 
           {/* Mobile Menu Toggle Button */}
           <button
-            className="lg:hidden p-2 text-[#071A3D] hover:bg-slate-100 rounded-lg transition-colors"
+            className="md:hidden p-2 text-[#071A3D] hover:bg-slate-100 rounded-lg transition-colors"
             onClick={() => setMobileOpen(!mobileOpen)}
             aria-label={mobileOpen ? 'Close Navigation Menu' : 'Open Navigation Menu'}
           >
@@ -314,7 +291,7 @@ export default function Navbar({ onLogoClick, splashDone = true, isReload = fals
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="fixed inset-0 z-40 bg-black/40 backdrop-blur-sm lg:hidden pt-[76px]"
+            className="fixed inset-0 z-40 bg-black/40 backdrop-blur-sm md:hidden pt-[76px]"
             onClick={() => setMobileOpen(false)}
           >
             <motion.div
@@ -374,25 +351,14 @@ export default function Navbar({ onLogoClick, splashDone = true, isReload = fals
                 Industries Served
               </NavLink>
 
-              <NavLink
-                to="/contact"
-                onClick={() => setMobileOpen(false)}
-                className={({ isActive }) =>
-                  `text-base font-bold py-2 border-b border-slate-100 flex items-center justify-between ${
-                    isActive ? 'text-[#C49A6C]' : 'text-[#071A3D]'
-                  }`
-                }
-              >
-                Contact
-              </NavLink>
-
               <div className="pt-4 flex flex-col gap-3">
                 <Link
                   to="/contact"
                   onClick={() => setMobileOpen(false)}
-                  className="btn-gold justify-center w-full py-3"
+                  className="btn-gold justify-center w-full py-3 flex items-center gap-2"
                 >
-                  Get in Touch →
+                  <Mail size={16} />
+                  Get in Touch
                 </Link>
               </div>
             </motion.div>

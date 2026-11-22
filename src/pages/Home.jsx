@@ -15,12 +15,10 @@ import {
   Handshake,
   TrendingUp,
   ShieldAlert,
-  ChevronRight,
-  MessageCircle
+  ChevronRight
 } from 'lucide-react';
 import { useSiteData } from '../context/SiteDataContext';
 import ServiceCard from '../components/ServiceCard';
-import CTASection from '../components/CTASection';
 import RotatingGlobe from '../components/RotatingGlobe';
 
 const trustIndicators = [
@@ -99,12 +97,12 @@ const methodologySteps = [
 export default function Home() {
   const { services, industries } = useSiteData();
   return (
-    <main className="bg-white overflow-hidden">
+    <main className="bg-transparent overflow-hidden">
 
       {/* ── 1. HERO SECTION ───────────────────────────────── */}
-      <section className="relative pt-[72px] lg:pt-[84px] pb-10 lg:pb-14 bg-white overflow-hidden">
+      <section className="relative pt-[68px] lg:pt-[76px] pb-8 lg:pb-10 bg-transparent overflow-hidden">
         <div className="site-container relative z-10">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-4 items-center min-h-[580px]">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-4 items-center min-h-[520px]">
             
             {/* Left Column: Headline & CTAs */}
             <div className="lg:col-span-7 flex flex-col justify-center">
@@ -153,12 +151,8 @@ export default function Home() {
                 <Link to="/contact" className="btn-gold px-6 py-3 text-sm">
                   Book a Consultation <ArrowRight size={15} />
                 </Link>
-                <Link to="/contact" className="btn-pill-outline px-6 py-3 text-sm flex items-center gap-2">
-                  <MessageCircle size={16} className="text-[#071A3D]" />
-                  WhatsApp Us
-                </Link>
-                <Link to="/services" className="text-xs font-bold text-[#071A3D] hover:text-[#C49A6C] transition-colors ml-2 flex items-center gap-1">
-                  Explore Services <ChevronRight size={14} />
+                <Link to="/services" className="text-sm font-bold text-[#071A3D] hover:text-[#C49A6C] transition-colors ml-2 flex items-center gap-1">
+                  Explore Services <ChevronRight size={15} />
                 </Link>
               </motion.div>
 
@@ -209,23 +203,23 @@ export default function Home() {
 
 
       {/* ── 2. KEY SERVICES SHOWCASE PANEL ────────────────── */}
-      <section className="relative site-container pb-14 lg:pb-16">
-        <div className="bg-[#071A3D] rounded-2xl sm:rounded-3xl shadow-[0_20px_50px_rgba(7,26,61,0.22)] p-6 sm:p-8 lg:p-9 border-t-2 border-[#C49A6C]/50">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-center">
+      <section className="relative site-container pb-8 lg:pb-10">
+        <div className="bg-[#071A3D] rounded-xl sm:rounded-2xl shadow-[0_12px_36px_rgba(7,26,61,0.2)] py-3.5 px-5 sm:py-4 sm:px-6 lg:py-4 lg:px-7 border-t-2 border-[#C49A6C]/50">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-6 items-center">
             
             {/* Left Header Portion */}
-            <div className="lg:col-span-3 lg:border-r lg:border-slate-700/60 lg:pr-6">
-              <span className="w-6 h-[3px] bg-[#C49A6C] rounded-full inline-block mb-2" />
-              <h2 className="text-xl sm:text-2xl font-extrabold text-white leading-tight mb-2">
+            <div className="lg:col-span-3 lg:border-r lg:border-slate-700/60 lg:pr-5">
+              <span className="w-5 h-[2px] bg-[#C49A6C] rounded-full inline-block mb-1" />
+              <h2 className="text-sm sm:text-base font-extrabold !text-white leading-tight mb-0.5">
                 Our Key Services
               </h2>
-              <p className="text-xs text-slate-300 leading-relaxed">
+              <p className="text-[11px] text-slate-300 leading-snug">
                 Comprehensive intelligence advisory for a complex world.
               </p>
             </div>
 
             {/* Right Horizontal Services Arrangement */}
-            <div className="lg:col-span-9 grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-6 gap-4 sm:gap-2">
+            <div className="lg:col-span-9 grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-6 gap-2 sm:gap-1.5">
               {keyServicesNav.map((service, idx) => {
                 const Icon = service.Icon;
                 return (
@@ -235,14 +229,14 @@ export default function Home() {
                     onClick={() => {
                       window.dispatchEvent(new CustomEvent('hash-nav', { detail: { id: service.slug } }));
                     }}
-                    className={`group flex flex-col items-center text-center p-3 rounded-xl transition-all duration-200 hover:bg-white/5 relative ${
+                    className={`group flex flex-col items-center text-center py-1.5 px-1.5 rounded-lg transition-all duration-200 hover:bg-white/5 relative ${
                       idx < keyServicesNav.length - 1 ? 'xl:border-r xl:border-slate-700/40' : ''
                     }`}
                   >
-                    <div className="w-10 h-10 rounded-lg flex items-center justify-center mb-2.5 transition-transform duration-200 group-hover:scale-110">
-                      <Icon size={22} className="text-[#C49A6C]" strokeWidth={1.8} />
+                    <div className="w-8 h-8 rounded-lg flex items-center justify-center mb-1.5 transition-transform duration-200 group-hover:scale-105">
+                      <Icon size={18} className="text-[#C49A6C]" strokeWidth={1.8} />
                     </div>
-                    <span className="text-[12px] font-bold text-white group-hover:text-[#C49A6C] leading-snug transition-colors">
+                    <span className="text-[11px] sm:text-[11.5px] font-bold !text-white group-hover:!text-[#C49A6C] leading-tight transition-colors">
                       {service.title}
                     </span>
                   </Link>
@@ -256,7 +250,7 @@ export default function Home() {
 
 
       {/* ── 3. ABOUT OPSYNERA SECTION ─────────────────────── */}
-      <section className="site-container py-12 lg:py-16">
+      <section className="site-container py-10 lg:py-14">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
           
           {/* Left Column: About Narrative */}
@@ -324,10 +318,10 @@ export default function Home() {
 
 
       {/* ── 4. DETAILED SERVICES SHOWCASE ─────────────────── */}
-      <section className="bg-[#F5F7FA] py-16 lg:py-24 border-y border-slate-200/70">
+      <section className="bg-[#F5F7FA]/75 backdrop-blur-[2px] py-12 lg:py-16 border-y border-slate-200/70">
         <div className="site-container">
           
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
             <div>
               <div className="flex items-center gap-2 mb-2">
                 <span className="w-7 h-[3px] bg-[#C49A6C] rounded-full inline-block" />
@@ -355,8 +349,8 @@ export default function Home() {
 
 
       {/* ── 5. ENGAGEMENT METHODOLOGY ─────────────────────── */}
-      <section className="site-container py-16 lg:py-24">
-        <div className="text-center max-w-2xl mx-auto mb-14">
+      <section className="site-container py-12 lg:py-16">
+        <div className="text-center max-w-2xl mx-auto mb-10">
           <div className="flex items-center justify-center gap-2 mb-2">
             <span className="w-7 h-[3px] bg-[#C49A6C] rounded-full inline-block" />
             <span className="text-[11px] font-extrabold tracking-[0.2em] text-[#071A3D] uppercase">
@@ -409,13 +403,10 @@ export default function Home() {
       </section>
 
 
-      {/* ── 6. INDUSTRIES SERVED PREVIEW ──────────────────── */}
-      <section className="bg-[#071A3D] text-white py-16 lg:py-20 relative overflow-hidden">
-        {/* Subtle grid backdrop */}
-        <div className="absolute inset-0 dot-matrix-dark opacity-30 pointer-events-none" />
-
+      {/* ── 6. INDUSTRIES SERVED & CONFIDENTIAL ENGAGEMENT ──────────────────── */}
+      <section className="relative z-10 bg-[#071A3D] text-white py-12 lg:py-16 overflow-hidden">
         <div className="site-container relative z-10">
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
             <div>
               <div className="flex items-center gap-2 mb-2">
                 <span className="w-7 h-[3px] bg-[#C49A6C] rounded-full inline-block" />
@@ -432,7 +423,7 @@ export default function Home() {
             </Link>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
             {industries.slice(0, 3).map((ind) => (
               <Link
                 key={ind.id}
@@ -457,19 +448,36 @@ export default function Home() {
               </Link>
             ))}
           </div>
+
+          {/* Integrated Confidential Engagement CTA */}
+          <div className="pt-10 border-t border-white/10 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-8">
+            <div className="max-w-2xl">
+              <div className="flex items-center gap-2 mb-2.5">
+                <span className="w-6 h-[3px] bg-[#C49A6C] rounded-full inline-block" />
+                <span className="text-[10.5px] font-extrabold tracking-[0.2em] text-[#C49A6C] uppercase">
+                  Confidential Engagement
+                </span>
+              </div>
+              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-white leading-tight mb-3 tracking-tight">
+                Need Greater Clarity on a Business Concern?
+              </h2>
+              <p className="text-sm sm:text-base text-slate-300 leading-relaxed max-w-xl mb-4">
+                Share your requirements with Opsynera and explore how structured intelligence advisory may support your critical decision-making.
+              </p>
+              <div className="flex items-center gap-2 text-xs text-slate-400">
+                <ShieldCheck size={15} className="text-[#C49A6C]" />
+                <span>All inquiries are held in strict legal and commercial confidentiality.</span>
+              </div>
+            </div>
+
+            <div className="flex flex-wrap items-center gap-3.5 flex-shrink-0">
+              <Link to="/contact" className="btn-gold px-7 py-3 text-sm">
+                Book a Consultation <ArrowRight size={15} />
+              </Link>
+            </div>
+          </div>
         </div>
       </section>
-
-
-      {/* ── 7. CTA SECTION ────────────────────────────────── */}
-      <CTASection
-        heading="Need Greater Clarity on a Business Concern?"
-        description="Share your requirements with Opsynera and explore how structured intelligence advisory may support your critical decision-making."
-        primaryBtn="Book a Consultation"
-        primaryPath="/contact"
-        secondaryBtn="Explore Our Services"
-        secondaryPath="/services"
-      />
 
     </main>
   );

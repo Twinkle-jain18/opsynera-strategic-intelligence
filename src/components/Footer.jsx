@@ -7,10 +7,10 @@ export default function Footer() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="bg-[#071A3D] text-white border-t border-slate-800" role="contentinfo">
+    <footer className="relative z-10 bg-[#020817] text-white border-t border-slate-700/80" role="contentinfo">
       
       {/* Main Footer Container */}
-      <div className="site-container pt-16 pb-12">
+      <div className="site-container pt-12 pb-10">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-10 lg:gap-8">
           
           {/* Column 1: Brand & Identity (Span 4) */}
@@ -50,6 +50,9 @@ export default function Footer() {
               </li>
               <li>
                 <Link to="/contact" className="hover:text-[#C49A6C] transition-colors">Contact & Inquiries</Link>
+              </li>
+              <li>
+                <Link to="/privacy-policy" className="hover:text-[#C49A6C] transition-colors">Privacy & Confidentiality Notice</Link>
               </li>
             </ul>
           </div>
@@ -137,18 +140,16 @@ export default function Footer() {
       </div>
 
       {/* Bottom Copyright Bar */}
-      <div className="border-t border-slate-800/80 bg-[#05132D]">
+      <div className="border-t border-slate-800/80 bg-[#010511]">
         <div className="site-container py-5 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-400">
           <div>
             &copy; {year} Opsynera – Strategic Intelligence Advisory. All Rights Reserved.
           </div>
-          <div className="flex items-center gap-6 text-xs">
-            <Link to="/privacy-policy" className="hover:text-[#C49A6C] transition-colors">
-              Privacy & Confidentiality Notice
-            </Link>
-            <Link to="/contact" className="hover:text-[#C49A6C] transition-colors">
-              Contact Desk
-            </Link>
+          <div className="flex items-center gap-1.5 text-xs text-slate-400">
+            <span>Developed by</span>
+            <span className="font-semibold text-[#C49A6C] tracking-wide hover:text-white transition-colors">
+              Vironix
+            </span>
           </div>
         </div>
       </div>
