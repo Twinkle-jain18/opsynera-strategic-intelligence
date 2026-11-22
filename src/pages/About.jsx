@@ -35,7 +35,7 @@ const coreValues = [
 
 export default function About() {
   return (
-    <main className="bg-white">
+    <main className="bg-transparent">
       <PageHero
         eyebrow="Who We Are"
         heading="About Opsynera"
@@ -118,7 +118,7 @@ export default function About() {
       </section>
 
       {/* ── Section 2: Our Core Values ────────────────────────── */}
-      <section className="bg-[#F5F7FA] py-10 lg:py-16 border-y border-slate-200/80">
+      <section className="bg-[#F5F7FA]/75 backdrop-blur-[2px] py-10 lg:py-16 border-y border-slate-200/80">
         <div className="site-container">
 
           <div className="text-center max-w-2xl mx-auto mb-10">
@@ -160,7 +160,7 @@ export default function About() {
       </section>
 
       {/* ── Section 3: Our Commitment ─────────────────────────── */}
-      <section className="bg-[#F5F7FA] py-10 lg:py-16 border-b border-slate-200/80">
+      <section className="bg-[#F5F7FA]/75 backdrop-blur-[2px] py-10 lg:py-16 border-b border-slate-200/80">
         <div className="site-container">
 
           {/* Heading */}

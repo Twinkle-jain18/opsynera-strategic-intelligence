@@ -2,14 +2,7 @@ import { motion } from 'framer-motion';
 
 export default function PageHero({ eyebrow, heading, subtitle, description }) {
   return (
-    <section className="relative bg-[#071A3D] text-white pt-[88px] pb-8 lg:pt-[104px] lg:pb-10 overflow-hidden border-b-2 border-[#C49A6C]/50">
-      {/* Background dot telemetry pattern */}
-      <div className="absolute inset-0 dot-matrix-dark opacity-30 pointer-events-none" />
-
-      {/* Decorative gradient glow */}
-      <div className="absolute -top-24 right-0 w-96 h-96 bg-blue-600/15 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute bottom-0 left-1/4 w-80 h-80 bg-[#C49A6C]/10 rounded-full blur-3xl pointer-events-none" />
-
+    <section className="relative z-10 bg-[#071A3D] text-white pt-[80px] pb-7 lg:pt-[92px] lg:pb-8 overflow-hidden border-b-2 border-[#C49A6C]/50">
       <div className="site-container relative z-10">
         <div className="max-w-3xl">
 

@@ -10,7 +10,7 @@ export default function Contact() {
   const hasContact = contact.email || contact.phone || contact.address;
 
   return (
-    <main className="bg-white">
+    <main className="bg-transparent">
       <PageHero
         eyebrow="Get In Touch"
         heading="Contact Opsynera"
@@ -18,7 +18,7 @@ export default function Contact() {
         description="We welcome inquiries from corporate leaders, general counsel, investment committees, and institutions requiring objective risk intelligence."
       />
 
-      <section className="site-container py-16 lg:py-24">
+      <section className="site-container py-12 lg:py-16">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16">
           
           {/* Left Column: Engagement Information & Privacy */}
