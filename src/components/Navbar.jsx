@@ -19,7 +19,7 @@ const industryIcons = {
   Building2, Landmark, Monitor, Layers, Briefcase,
 };
 
-export default function Navbar({ onLogoClick }) {
+export default function Navbar({ onLogoClick, splashDone = true, isReload = false }) {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [servicesDropdown, setServicesDropdown] = useState(false);
@@ -79,7 +79,12 @@ export default function Navbar({ onLogoClick }) {
             aria-label="Opsynera Strategic Intelligence Advisory"
             onClick={() => onLogoClick?.()}
           >
-            <OpsyneraLogo size={38} />
+            <OpsyneraLogo
+              size={38}
+              idPrefix="nav"
+              hideForSplash={!splashDone}
+              isReload={isReload}
+            />
           </Link>
 
           {/* Center Navigation Links */}
@@ -323,6 +328,7 @@ export default function Navbar({ onLogoClick }) {
               <NavLink
                 to="/"
                 end
+                onClick={() => setMobileOpen(false)}
                 className={({ isActive }) =>
                   `text-base font-bold py-2 border-b border-slate-100 flex items-center justify-between ${
                     isActive ? 'text-[#C49A6C]' : 'text-[#071A3D]'
@@ -334,6 +340,7 @@ export default function Navbar({ onLogoClick }) {
 
               <NavLink
                 to="/about"
+                onClick={() => setMobileOpen(false)}
                 className={({ isActive }) =>
                   `text-base font-bold py-2 border-b border-slate-100 flex items-center justify-between ${
                     isActive ? 'text-[#C49A6C]' : 'text-[#071A3D]'
@@ -345,6 +352,7 @@ export default function Navbar({ onLogoClick }) {
 
               <NavLink
                 to="/services"
+                onClick={() => setMobileOpen(false)}
                 className={({ isActive }) =>
                   `text-base font-bold py-2 border-b border-slate-100 flex items-center justify-between ${
                     isActive ? 'text-[#C49A6C]' : 'text-[#071A3D]'
@@ -356,6 +364,7 @@ export default function Navbar({ onLogoClick }) {
 
               <NavLink
                 to="/industries"
+                onClick={() => setMobileOpen(false)}
                 className={({ isActive }) =>
                   `text-base font-bold py-2 border-b border-slate-100 flex items-center justify-between ${
                     isActive ? 'text-[#C49A6C]' : 'text-[#071A3D]'
@@ -367,6 +376,7 @@ export default function Navbar({ onLogoClick }) {
 
               <NavLink
                 to="/contact"
+                onClick={() => setMobileOpen(false)}
                 className={({ isActive }) =>
                   `text-base font-bold py-2 border-b border-slate-100 flex items-center justify-between ${
                     isActive ? 'text-[#C49A6C]' : 'text-[#071A3D]'
@@ -377,7 +387,11 @@ export default function Navbar({ onLogoClick }) {
               </NavLink>
 
               <div className="pt-4 flex flex-col gap-3">
-                <Link to="/contact" className="btn-gold justify-center w-full py-3">
+                <Link
+                  to="/contact"
+                  onClick={() => setMobileOpen(false)}
+                  className="btn-gold justify-center w-full py-3"
+                >
                   Get in Touch →
                 </Link>
               </div>
